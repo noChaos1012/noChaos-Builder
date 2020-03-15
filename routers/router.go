@@ -9,7 +9,6 @@ package routers
 
 import (
 	"com.waschild/noChaos-Server/controllers"
-
 	"github.com/astaxie/beego"
 )
 
@@ -23,6 +22,16 @@ func init() {
 		beego.NSNamespace("/user",
 			beego.NSInclude(
 				&controllers.UserController{},
+			),
+		),
+		beego.NSNamespace("/logic",
+			beego.NSInclude(
+				&controllers.LogicController{},
+			),
+		),
+		beego.NSNamespace("/servlet",
+			beego.NSInclude(
+				&controllers.ServletController{},
 			),
 		),
 	)

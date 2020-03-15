@@ -11,6 +11,17 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /logic/:
+    get:
+      tags:
+      - logic
+      description: 编译逻辑
+      operationId: LogicController.BuildLogic
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
   /object/:
     get:
       tags:
@@ -100,6 +111,45 @@ paths:
           description: '{string} delete success!'
         "403":
           description: objectId is empty
+  /servlet/create:
+    post:
+      tags:
+      - servlet
+      description: 创建服务
+      operationId: ServletController.CreatedServlet
+      parameters:
+      - in: string
+        name: name
+        description: 服务名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
+  /servlet/package:
+    post:
+      tags:
+      - servlet
+      description: 打包服务
+      operationId: ServletController.PackageServlet
+      parameters:
+      - in: string
+        name: name
+        description: 服务名称
+        schema:
+          $ref: '#/definitions/true'
+      - in: string
+        name: mode
+        description: 模式（mac/linux）
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 打包成功
+        "403":
+          description: body is empty
   /user/:
     get:
       tags:
@@ -255,6 +305,9 @@ definitions:
         $ref: '#/definitions/models.Profile'
       Username:
         type: string
+  "true":
+    title: "true"
+    type: object
 tags:
 - name: object
   description: |

@@ -7,6 +7,15 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:LogicController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:LogicController"],
+		beego.ControllerComments{
+			Method:           "Get",
+			Router:           `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ObjectController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ObjectController"],
 		beego.ControllerComments{
 			Method:           "Post",
@@ -48,6 +57,24 @@ func init() {
 			Method:           "Delete",
 			Router:           `/:objectId`,
 			AllowHTTPMethods: []string{"delete"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ServletController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ServletController"],
+		beego.ControllerComments{
+			Method:           "Create",
+			Router:           `/create`,
+			AllowHTTPMethods: []string{"Post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ServletController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ServletController"],
+		beego.ControllerComments{
+			Method:           "Package",
+			Router:           `/package`,
+			AllowHTTPMethods: []string{"Post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil})
