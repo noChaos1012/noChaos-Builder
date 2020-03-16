@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"com.waschild/noChaos-Server/build/servlet"
+	"com.waschild/noChaos-Server/build"
 	"github.com/astaxie/beego"
 )
 

@@ -3,9 +3,8 @@ package main
 import (
 	"com.waschild/noChaos-Server/models/noChaos"
 	_ "com.waschild/noChaos-Server/routers"
-	"os"
-
 	"github.com/astaxie/beego"
+	"os"
 )
 
 func main() {
