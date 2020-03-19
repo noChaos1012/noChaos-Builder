@@ -59,7 +59,9 @@ func InitServlet(name string) {
 
 	utils.WriteToFile(path.Join(appPath, "main.go"), strings.Replace(main_Code, "{{.Appname}}", rootPath, -1))
 	utils.WriteToFile(path.Join(appPath, "conf", "app.conf"), strings.Replace(conf_Code, "{{.Appname}}", name, -1))
-	utils.WriteToFile(path.Join(appPath, "controllers", "object.go"), strings.Replace(controller_Code, "{{.Appname}}", rootPath, -1))
+
+	objectLogic := Logic{"object", []Variable{}, []Variable{}, []Node{}}
+	utils.WriteToFile(path.Join(appPath, "controllers", "object.go"), objectLogic.GetCode())
 	utils.WriteToFile(path.Join(appPath, "models", "object.go"), model_Code)
 	utils.WriteToFile(path.Join(appPath, "routers", "router.go"), strings.Replace(router_Code, "{{.Appname}}", rootPath, -1))
 

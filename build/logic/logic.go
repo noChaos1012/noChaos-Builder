@@ -1,12 +1,4 @@
-package build
-
-import (
-	"bytes"
-	"com.waschild/noChaos-Server/utils"
-	"fmt"
-	"html/template"
-	"log"
-)
+package logic
 
 //控制器代码
 
@@ -78,37 +70,37 @@ func amain() {
 }
 
 //创建逻辑代码
-func BuildLogic() {
-
-	fmt.Println(GetImports)
-
-	masterTmpl, err := template.New("master").Parse(controller_Code)
-	//masterTmpl, err := template.New("master").Parse()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var doc bytes.Buffer
-
-	if err := masterTmpl.Execute(&doc, GetImports()); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(doc.String())
-
-	utils.WriteToFile("aa", doc.String())
-
-	//appPath := noChaos.DeployPath + "/" + appName
-
-	//os.MkdirAll(appPath, 0755)
-	//
-	////cmd := exec.Command("/bin/bash", "-c", "cd "+ appPath )
-	////fmt.Println(cmd.Run())
-	//utils.WriteToFile(path.Join(appPath, "main.go"),strings.Replace(main_Code, "{{.Appname}}", appName, -1))
-	//
-	//os.Mkdir(path.Join(appPath, "conf"), 0755)
-	//utils.WriteToFile(path.Join(appPath, "conf", "app.conf"), strings.Replace(conf_Code, "{{.Appname}}", appName, -1))
-	//os.Mkdir(path.Join(appPath, "controllers"), 0755)
-	//os.Mkdir(path.Join(appPath, "models"), 0755)
-	//os.Mkdir(path.Join(appPath, "tests"), 0755)
-}
+//func BuildLogic() {
+//
+//	fmt.Println(GetImports)
+//
+//	masterTmpl, err := template.New("master").Parse(controller_Code)
+//	//masterTmpl, err := template.New("master").Parse()
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	var doc bytes.Buffer
+//
+//	if err := masterTmpl.Execute(&doc, GetImports()); err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	fmt.Println(doc.String())
+//
+//	utils.WriteToFile("aa", doc.String())
+//
+//	//appPath := noChaos.DeployPath + "/" + appName
+//
+//	//os.MkdirAll(appPath, 0755)
+//	//
+//	////cmd := exec.Command("/bin/bash", "-c", "cd "+ appPath )
+//	////fmt.Println(cmd.Run())
+//	//utils.WriteToFile(path.Join(appPath, "main.go"),strings.Replace(main_Code, "{{.Appname}}", appName, -1))
+//	//
+//	//os.Mkdir(path.Join(appPath, "conf"), 0755)
+//	//utils.WriteToFile(path.Join(appPath, "conf", "app.conf"), strings.Replace(conf_Code, "{{.Appname}}", appName, -1))
+//	//os.Mkdir(path.Join(appPath, "controllers"), 0755)
+//	//os.Mkdir(path.Join(appPath, "models"), 0755)
+//	//os.Mkdir(path.Join(appPath, "tests"), 0755)
+//}
