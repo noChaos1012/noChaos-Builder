@@ -16,6 +16,15 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:LogicController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:LogicController"],
+		beego.ControllerComments{
+			Method:           "Test",
+			Router:           `/test`,
+			AllowHTTPMethods: []string{"Post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 	beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ObjectController"] = append(beego.GlobalControllerRouter["com.waschild/noChaos-Server/controllers:ObjectController"],
 		beego.ControllerComments{
 			Method:           "Post",

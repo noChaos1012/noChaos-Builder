@@ -22,6 +22,17 @@ paths:
           description: 编译成功
         "403":
           description: body is empty
+  /logic/test:
+    post:
+      tags:
+      - logic
+      description: 编译逻辑
+      operationId: LogicController.BuildLogic
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
   /object/:
     get:
       tags:

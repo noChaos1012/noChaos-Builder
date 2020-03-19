@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -40,11 +39,11 @@ func main() {
 		guardians = []string{"Gamora", "Groot", "Nebula", "Rocket", "Star-Lord"}
 	)
 
-	////
-	//masterTmpl, err := template.New("master").Funcs(funcs).Parse(master)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
+	////Execute
+	masterTmpl, err := template.New("master").Funcs(funcs).Parse(master)
+	if err != nil {
+		log.Fatal(err)
+	}
 	//
 	//overlayTmpl, err := template.New("overlay").Funcs(funcs).Parse(overlay)
 	//
@@ -53,9 +52,9 @@ func main() {
 	//	log.Fatal(err)
 	//}
 	//
-	//if err := masterTmpl.Execute(os.Stdout, guardians); err != nil {
-	//	log.Fatal(err)
-	//}
+	if err := masterTmpl.Execute(os.Stdout, guardians); err != nil {
+		log.Fatal(err)
+	}
 	//fmt.Println(masterTmpl.DefinedTemplates())
 	//
 	//if err := overlayTmpl.Execute(os.Stdout, guardians); err != nil {
