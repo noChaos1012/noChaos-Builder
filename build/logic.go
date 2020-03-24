@@ -23,6 +23,7 @@ type Logic struct {
 	Inputs  []Variable `json:"inputs"`  //输入变量
 	Outputs []Variable `json:"outputs"` //输出变量
 	Nodes   []Node     `json:"nodes"`   //运算节点
+	Flows   []Flow     `json:"flows"`   //流向
 }
 
 //获取代码
@@ -142,4 +143,17 @@ func BuildLogic(servletName string, logicName string, code string) {
 	cmd := exec.Command("/bin/bash", "-c", "cd "+controllerDir+";"+gofmtCMD)
 
 	fmt.Println(cmd.Run())
+}
+
+//顺序流向
+type Flow struct {
+	From   string
+	To     string
+	Judges [][]Judge
+}
+
+//判断条件
+type Judge struct {
+	Param     string
+	Condition interface{} //条件
 }

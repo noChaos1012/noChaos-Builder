@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"com.waschild/noChaos-Server/build"
+	"com.waschild/noChaos-Server/models"
 	"github.com/astaxie/beego"
 )
 
@@ -16,7 +17,11 @@ type ServletController struct {
 // @Failure 403 body is empty
 // @router /create [Post]
 func (s *ServletController) Create() {
-	build.InitServlet(s.GetString("name"))
+
+	servlet := models.NC_Servlet{}
+	servlet.Name = s.GetString("name")
+	models.NCDB.Create(&servlet)
+	//servlet.Create()
 	s.Data["json"] = "create servlet success"
 	s.ServeJSON()
 }
