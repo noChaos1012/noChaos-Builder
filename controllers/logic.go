@@ -46,10 +46,10 @@ func (l *LogicController) Test() {
 	}
 
 	fmt.Println(receivedLogic)
-	fmt.Println(utils.GetEnglish(receivedLogic.Name), receivedLogic.GetCode())
+	fmt.Println(utils.GetPinYin(receivedLogic.Name), receivedLogic.GetCode())
 
 	//
-	build.BuildLogic("testapp0316-1", utils.GetEnglish(receivedLogic.Name), receivedLogic.GetCode())
+	build.BuildLogic("testapp0316-1", utils.GetPinYin(receivedLogic.Name), receivedLogic.GetCode())
 	data, _ := json.Marshal(receivedLogic.GetCode())
 	l.Data["json"] = string(data)
 	l.ServeJSON()

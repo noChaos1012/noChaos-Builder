@@ -21,7 +21,7 @@ func init() {
 		NCDB.DB().SetMaxOpenConns(100)
 	}
 	//defer NCDB.Close()
-	NCDB.AutoMigrate(&NC_Form{}, &NC_Field{}, &NC_Relation{}, &NC_Servlet{})
+	NCDB.AutoMigrate(&NC_Form{}, &NC_Field{}, &NC_Relation{}, &NC_Servlet{}, &Henduoziduan{})
 }
 
 //分页结构体

@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   title: beego Test API
   description: beego has a very cool tools to autogenerate documents for your API
-  version: 1.0.1
+  version: 1.0.0
   termsOfService: http://beego.me/
   contact:
     email: astaxie@gmail.com
@@ -11,6 +11,23 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /form/build:
+    post:
+      tags:
+      - form
+      description: 创建服务
+      operationId: FormController.CreatedServlet
+      parameters:
+      - in: string
+        name: name
+        description: 服务名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
   /form/create:
     post:
       tags:

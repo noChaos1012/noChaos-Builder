@@ -1,6 +1,7 @@
 package build
 
 import (
+	"com.waschild/noChaos-Server/models"
 	"com.waschild/noChaos-Server/models/noChaos"
 	"com.waschild/noChaos-Server/utils"
 	"fmt"
@@ -62,7 +63,7 @@ func InitServlet(name string) {
 
 	//objectLogic := Logic{"object", []Variable{}, []Variable{}, []Node{}}
 	//utils.WriteToFile(path.Join(appPath, "controllers", "object.go"), objectLogic.GetCode())
-	//utils.WriteToFile(path.Join(appPath, "models", "object.go"), model_Code)
+	//utils.WriteToFile(path.Join(appPath, "models", "models.go"), model_Code)
 	//utils.WriteToFile(path.Join(appPath, "routers", "router.go"), strings.Replace(router_Code, "{{.Appname}}", rootPath, -1))
 
 }
@@ -88,5 +89,14 @@ func PackageServlet(name, mode string) {
 
 	cmd := exec.Command("/bin/bash", "-c", "cd "+appPath+";"+beePackCode)
 	fmt.Println(cmd.Run())
+
+}
+
+//打包服务
+func packageServlet(s models.NC_Servlet) {
+	//appPath := noChaos.DeployPath + "/" + s.Name       //绝对路径
+
+	//构建models文件
+	//utils.WriteToFile(path.Join(appPath, "models", "models.go"), model_Code)
 
 }

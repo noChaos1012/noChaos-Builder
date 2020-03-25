@@ -31,7 +31,7 @@ func ReUnmarshal(inValue, outValue interface{}) {
 }
 
 //获取首字母大写的英文
-func GetEnglish(chinese string) string {
+func GetPinYin(chinese string) string {
 	preWord := pinyin.Romanize(chinese)
 	strArry := []rune(preWord)
 	if strArry[0] >= 97 && strArry[0] <= 122 {

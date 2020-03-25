@@ -28,7 +28,7 @@ type Logic struct {
 
 //获取代码
 func (l Logic) GetCode() string {
-	code := strings.Replace(controllerCode, "{{.methodName}}", utils.GetEnglish(l.Name), -1)
+	code := strings.Replace(controllerCode, "{{.methodName}}", utils.GetPinYin(l.Name), -1)
 	code = strings.Replace(code, "{{.inParams}}", l.GetInParams(), -1)
 	code = strings.Replace(code, "{{.outParams}}", l.GetOutParams(), -1)
 
