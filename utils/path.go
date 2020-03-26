@@ -1,8 +1,6 @@
-package noChaos
+package utils
 
-import (
-	"os"
-)
+import "os"
 
 var (
 	DeployPath      string // 部署环境地址

@@ -11,11 +11,13 @@ import (
 //数据结构
 type NC_Form struct {
 	ID        uint `gorm:"primary_key"`
+	ServletId uint //服务ID
+	DirId     uint //文件夹ID
 	CreatedAt time.Time
 	Name      string        //名称
 	IsStore   bool          //需要存储
-	Fields    []NC_Field    `gorm:"FOREIGNKEY:FormId`     //字段
-	Relations []NC_Relation `gorm:"FOREIGNKEY:FromFormId` //关联
+	Fields    []NC_Field    `gorm:"FOREIGNKEY:FormId"`     //字段
+	Relations []NC_Relation `gorm:"FOREIGNKEY:FromFormId"` //关联
 }
 
 //数据结构 — 字段
@@ -23,8 +25,8 @@ type NC_Field struct {
 	ID            uint `gorm:"primary_key"`
 	FormId        uint
 	Name          string
-	Type          string
-	IsKey         bool
+	Type          string //类型
+	IsKey         bool   //主键
 	AutoIncrement bool   //自增
 	Index         bool   //索引
 	Unique        bool   //唯一
@@ -33,10 +35,19 @@ type NC_Field struct {
 	Size          int    //长度
 	Maximum       int    //精度
 	Decimal       int    //标度
-	IsArray       bool   //位数
+	IsArray       bool   //是否是复数
 }
 
+//关联
+type NC_Relation struct {
+	Type       string //关联类型、一对多、多对多
+	FromFormId uint   //来自对象
+	ToFormId   uint   //关联对象
+}
+
+//类型字典
 var TypeMap = map[string]map[string]string{}
+
 var modelCode = `package models
 
 type {{.ModelName}} struct{
@@ -72,13 +83,6 @@ func init() {
 
 }
 
-//关联
-type NC_Relation struct {
-	Type       string //关联类型、一对多、多对多
-	FromFormId uint   //来自对象
-	ToFormId   uint   //关联对象
-}
-
 func (form NC_Form) GetCode() string {
 
 	code := strings.Replace(modelCode, "{{.ModelName}}", utils.GetPinYin(form.Name), -1)
@@ -94,7 +98,7 @@ func (form NC_Form) GetCode() string {
 
 }
 
-//
+//获取编码
 func (f NC_Field) GetCode(IsStore bool) string {
 	code := strings.Replace(fieldCode, "{{.Name}}", utils.GetPinYin(f.Name), -1)
 	code = strings.Replace(code, "{{.Type}}", f.GetGoType(), -1)

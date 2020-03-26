@@ -2,7 +2,6 @@ package build
 
 import (
 	"com.waschild/noChaos-Server/models"
-	"com.waschild/noChaos-Server/models/noChaos"
 	"com.waschild/noChaos-Server/utils"
 	"fmt"
 	"os/exec"
@@ -13,37 +12,12 @@ import (
 	path "path/filepath"
 )
 
-var conf_Code = `appname = {{.Appname}}
-httpport = 8080
-runmode = dev
-autorender = false
-copyrequestbody = true
-EnableDocs = true
-sqlconn = 
-`
-
-var main_Code = `package main
-
-import (
-	_ "{{.Appname}}/routers"
-	"github.com/astaxie/beego"
-)
-
-func main() {
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
-	}
-	beego.Run()
-}
-`
-
 //初始化服务框架
 func InitServlet(name string) {
 
 	fmt.Println("buildServlet")
-	appPath := noChaos.DeployPath + "/" + name       //绝对路径
-	rootPath := noChaos.PackageRootPath + "/" + name //相对包内路径
+	appPath := utils.DeployPath + "/" + name       //绝对路径
+	rootPath := utils.PackageRootPath + "/" + name //相对包内路径
 
 	fmt.Println("appPath: " + appPath)
 
