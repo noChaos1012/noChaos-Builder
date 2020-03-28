@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
+	"com.waschild/noChaos-Server/models"
 )
 
 type LogicController struct {
-	beego.Controller
+	NCController
 }
 
 // @Title BuildLogic
@@ -50,4 +50,15 @@ func (l *LogicController) Test() {
 	//l.Data["json"] = string(data)
 	//l.ServeJSON()
 
+}
+
+// @Title	GetDemo
+// @Description 获取示例
+// @Param	name	string	true	"表单名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /getDemo [Post]
+func (c *LogicController) GetDemo() {
+	model := models.NC_Logic{}
+	c.responseSuccess(map[string]interface{}{"model": model})
 }

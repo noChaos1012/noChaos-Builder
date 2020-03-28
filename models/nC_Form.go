@@ -14,14 +14,14 @@ type NC_Form struct {
 	ServletId uint //服务ID
 	DirId     uint //文件夹ID
 	CreatedAt time.Time
-	Name      string        //名称
-	IsStore   bool          //需要存储
-	Fields    []NC_Field    `gorm:"FOREIGNKEY:FormId"`     //字段
-	Relations []NC_Relation `gorm:"FOREIGNKEY:FromFormId"` //关联
+	Name      string            //名称
+	IsStore   bool              //需要存储
+	Fields    []NC_FormField    `gorm:"FOREIGNKEY:FormId"`     //字段
+	Relations []NC_FormRelation `gorm:"FOREIGNKEY:FromFormId"` //关联
 }
 
 //数据结构 — 字段
-type NC_Field struct {
+type NC_FormField struct {
 	ID            uint `gorm:"primary_key"`
 	FormId        uint
 	Name          string
@@ -39,7 +39,7 @@ type NC_Field struct {
 }
 
 //关联
-type NC_Relation struct {
+type NC_FormRelation struct {
 	Type       string //关联类型、一对多、多对多
 	FromFormId uint   //来自对象
 	ToFormId   uint   //关联对象
@@ -99,7 +99,7 @@ func (form NC_Form) GetCode() string {
 }
 
 //获取编码
-func (f NC_Field) GetCode(IsStore bool) string {
+func (f NC_FormField) GetCode(IsStore bool) string {
 	code := strings.Replace(fieldCode, "{{.Name}}", utils.GetPinYin(f.Name), -1)
 	code = strings.Replace(code, "{{.Type}}", f.GetGoType(), -1)
 
@@ -143,7 +143,7 @@ func (f NC_Field) GetCode(IsStore bool) string {
 }
 
 //获取程序字段类型
-func (field NC_Field) GetGoType() string {
+func (field NC_FormField) GetGoType() string {
 	fieldType, ok := TypeMap["go"][field.Type]
 	if !ok {
 		fieldType = field.Type
@@ -161,7 +161,7 @@ func (field NC_Field) GetGoType() string {
 }
 
 //获取数据库字段类型
-func (field NC_Field) GetSQLType() string {
+func (field NC_FormField) GetSQLType() string {
 	fieldType, ok := TypeMap["sql"][field.Type]
 	if !ok {
 		return ""

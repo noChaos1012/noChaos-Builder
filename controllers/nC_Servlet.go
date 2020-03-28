@@ -59,3 +59,14 @@ func (s *ServletController) Package() {
 	s.Data["json"] = "package servlet success"
 	s.ServeJSON()
 }
+
+// @Title	GetDemo
+// @Description 获取示例
+// @Param	name	string	true	"表单名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /getDemo [Post]
+func (c *ServletController) GetDemo() {
+	model := models.NC_Servlet{}
+	c.responseSuccess(map[string]interface{}{"model": model})
+}

@@ -3,7 +3,7 @@
     "info": {
         "title": "beego Test API",
         "description": "beego has a very cool tools to autogenerate documents for your API",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "termsOfService": "http://beego.me/",
         "contact": {
             "email": "astaxie@gmail.com"
@@ -15,6 +15,321 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/build/create": {
+            "post": {
+                "tags": [
+                    "build"
+                ],
+                "description": "创建",
+                "operationId": "BuildController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/build/getDemo": {
+            "post": {
+                "tags": [
+                    "build"
+                ],
+                "description": "获取示例",
+                "operationId": "BuildController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/build/getDetail": {
+            "post": {
+                "tags": [
+                    "build"
+                ],
+                "description": "查询详情",
+                "operationId": "BuildController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/build/getMany": {
+            "post": {
+                "tags": [
+                    "build"
+                ],
+                "description": "查询多个",
+                "operationId": "BuildController.GetMany",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/create": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "创建",
+                "operationId": "DatabaseController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/delete": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "删除",
+                "operationId": "DatabaseController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/getDemo": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "获取示例",
+                "operationId": "DatabaseController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/getDetail": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "查询详情",
+                "operationId": "DatabaseController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/getMany": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "查询多个",
+                "operationId": "DatabaseController.GetMany",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/update": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "修改表单",
+                "operationId": "DatabaseController.Update",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/deploy/create": {
+            "post": {
+                "tags": [
+                    "deploy"
+                ],
+                "description": "创建",
+                "operationId": "DeployController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/deploy/delete": {
+            "post": {
+                "tags": [
+                    "deploy"
+                ],
+                "description": "删除",
+                "operationId": "DeployController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/deploy/getDemo": {
+            "post": {
+                "tags": [
+                    "deploy"
+                ],
+                "description": "获取示例",
+                "operationId": "DeployController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/deploy/getDetail": {
+            "post": {
+                "tags": [
+                    "deploy"
+                ],
+                "description": "查询详情",
+                "operationId": "DeployController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/deploy/getMany": {
+            "post": {
+                "tags": [
+                    "deploy"
+                ],
+                "description": "查询多个",
+                "operationId": "DeployController.GetMany",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/dir/create": {
             "post": {
                 "tags": [
@@ -39,6 +354,33 @@
                 ],
                 "description": "删除表单",
                 "operationId": "DirectoryController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dir/getDemo": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "获取示例",
+                "operationId": "DirectoryController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "编译成功"
@@ -191,6 +533,33 @@
                 }
             }
         },
+        "/form/getDemo": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "获取示例",
+                "operationId": "FormController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/form/getDetail": {
             "post": {
                 "tags": [
@@ -198,6 +567,33 @@
                 ],
                 "description": "查询表单详情",
                 "operationId": "FormController.GetDetail",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/form/getFieldDemo": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "获取示例",
+                "operationId": "FormController.GetFieldDemo",
                 "parameters": [
                     {
                         "in": "string",
@@ -306,6 +702,33 @@
                 ],
                 "description": "编译逻辑",
                 "operationId": "LogicController.BuildLogic",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/logic/getDemo": {
+            "post": {
+                "tags": [
+                    "logic"
+                ],
+                "description": "获取示例",
+                "operationId": "LogicController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "编译成功"
@@ -492,6 +915,33 @@
                 ],
                 "description": "删除",
                 "operationId": "ServletController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/servlet/getDemo": {
+            "post": {
+                "tags": [
+                    "servlet"
+                ],
+                "description": "获取示例",
+                "operationId": "ServletController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "编译成功"

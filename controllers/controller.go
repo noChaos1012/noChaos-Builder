@@ -17,7 +17,7 @@ func (ncc *NCController) handlerErrOK(err error) bool {
 
 	if err != nil {
 		fmt.Println("come to error ")
-
+		panic(err)
 		res := make(map[string]interface{})
 		res["status"] = "failure"
 		res["description"] = "接收数据解析失败"
@@ -62,20 +62,20 @@ func (ncc *NCController) GetManyWithModel(model, returnModels interface{}) {
 // 查询详情
 func (ncc *NCController) GetDetailWithModel(model interface{}) {
 
-	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, &model)
+	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, model)
 
 	if ncc.handlerErrOK(err) {
-		models.NCDB.Where(&model).First(&model)
+		models.NCDB.Where(model).First(model)
 		ncc.responseSuccess(map[string]interface{}{"model": model})
 	}
 }
 
 // 修改
 func (ncc *NCController) UpdateWithModel(model interface{}) {
-	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, &model)
+	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, model)
 
 	if ncc.handlerErrOK(err) {
-		models.NCDB.Save(&model)
+		models.NCDB.Debug().Save(model)
 		ncc.responseSuccess(map[string]interface{}{"model": model})
 	}
 }
@@ -83,10 +83,10 @@ func (ncc *NCController) UpdateWithModel(model interface{}) {
 // 删除
 func (ncc *NCController) DeleteWithModel(model interface{}) {
 
-	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, &model)
+	err := json.Unmarshal(ncc.Ctx.Input.RequestBody, model)
 
 	if ncc.handlerErrOK(err) {
-		models.NCDB.Delete(&model)
+		models.NCDB.Delete(model)
 		ncc.responseSuccess(map[string]interface{}{"model": model})
 	}
 }

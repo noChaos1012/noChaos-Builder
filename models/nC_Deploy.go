@@ -14,7 +14,7 @@ type NC_Deploy struct {
 }
 
 //部署
-type NC_DownLoad struct {
+type NC_DeployDownload struct {
 	gorm.Model
 	ServletId          uint `gorm:"not null"`
 	Version            string

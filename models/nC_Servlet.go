@@ -15,7 +15,7 @@ type NC_Servlet struct {
 	gorm.Model
 	Name        string
 	Description string
-	DataBase    NC_DataBase `gorm:"FOREIGNKEY:ServletId"`
+	DataBase    NC_Database `gorm:"FOREIGNKEY:ServletId"`
 	Deploys     []NC_Deploy `gorm:"FOREIGNKEY:ServletId"`
 	Forms       []NC_Form   `gorm:"FOREIGNKEY:ServletId"`
 }

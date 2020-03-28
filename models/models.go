@@ -27,11 +27,11 @@ func init() {
 		&NC_Logic{},
 		&NC_Servlet{},
 		&NC_Form{},
-		&NC_DataBase{},
+		&NC_Database{},
 		&NC_Deploy{},
-		&NC_Field{},
-		&NC_Relation{},
-		&NC_DownLoad{},
+		&NC_FormField{},
+		&NC_FormRelation{},
+		&NC_DeployDownload{},
 		&Henduoziduan{})
 }
 

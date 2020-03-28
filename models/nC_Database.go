@@ -5,7 +5,7 @@ import (
 )
 
 //数据库
-type NC_DataBase struct {
+type NC_Database struct {
 	ServletId uint
 	Port      string
 	Host      string
@@ -16,6 +16,6 @@ type NC_DataBase struct {
 }
 
 // 获取连接代码
-func (db NC_DataBase) GetConnectionCode() string {
+func (db NC_Database) GetConnectionCode() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", db.UserName, db.Password, db.Host, db.Port, db.DataBase, db.Charset)
 }

@@ -11,7 +11,7 @@ type DownLoadController struct {
 // @Success 200 编译成功
 // @Failure 403 body is empty
 // @router /create [Post]
-func (c *DownLoadController) Create() { c.CreateWithModel(&models.NC_DownLoad{}) }
+func (c *DownLoadController) Create() { c.CreateWithModel(&models.NC_DeployDownload{}) }
 
 // @Title	GetMany
 // @Description 查询多个
@@ -20,7 +20,7 @@ func (c *DownLoadController) Create() { c.CreateWithModel(&models.NC_DownLoad{})
 // @Failure 403 body is empty
 // @router /getMany [Post]
 func (c *DownLoadController) GetMany() {
-	c.GetManyWithModel(&models.NC_DownLoad{}, &[]models.NC_DownLoad{})
+	c.GetManyWithModel(&models.NC_DeployDownload{}, &[]models.NC_DeployDownload{})
 }
 
 // @Title	GetDetail
@@ -28,4 +28,15 @@ func (c *DownLoadController) GetMany() {
 // @Success 200 编译成功
 // @Failure 403 body is empty
 // @router /getDetail [Post]
-func (c *DownLoadController) GetDetail() { c.GetDetailWithModel(&models.NC_DownLoad{}) }
+func (c *DownLoadController) GetDetail() { c.GetDetailWithModel(&models.NC_DeployDownload{}) }
+
+// @Title	GetDemo
+// @Description 获取示例
+// @Param	name	string	true	"表单名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /getDemo [Post]
+func (c *DownLoadController) GetDemo() {
+	model := models.NC_DeployDownload{}
+	c.responseSuccess(map[string]interface{}{"model": model})
+}

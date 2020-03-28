@@ -34,3 +34,14 @@ func (c *DeployController) GetDetail() { c.GetDetailWithModel(&models.NC_Deploy{
 // @Failure 403 body is empty
 // @router /delete [Post]
 func (c *DeployController) Delete() { c.DeleteWithModel(&models.NC_Deploy{}) }
+
+// @Title	GetDemo
+// @Description 获取示例
+// @Param	name	string	true	"表单名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /getDemo [Post]
+func (c *DeployController) GetDemo() {
+	model := models.NC_Deploy{}
+	c.responseSuccess(map[string]interface{}{"model": model})
+}

@@ -1,4 +1,4 @@
-// @APIVersion 1.0.0
+// @APIVersion 1.0.1
 // @Title beego Test API
 // @Description beego has a very cool tools to autogenerate documents for your API
 // @Contact astaxie@gmail.com
@@ -42,6 +42,21 @@ func init() {
 		beego.NSNamespace("/dir",
 			beego.NSInclude(
 				&controllers.DirectoryController{},
+			),
+		),
+		beego.NSNamespace("/db",
+			beego.NSInclude(
+				&controllers.DatabaseController{},
+			),
+		),
+		beego.NSNamespace("/deploy",
+			beego.NSInclude(
+				&controllers.DeployController{},
+			),
+		),
+		beego.NSNamespace("/build",
+			beego.NSInclude(
+				&controllers.BuildController{},
 			),
 		),
 	)

@@ -45,3 +45,14 @@ func (d *DirectoryController) Update() { d.UpdateWithModel(&models.NC_Directory{
 // @Failure 403 body is empty
 // @router /delete [Post]
 func (d *DirectoryController) Delete() { d.DeleteWithModel(&models.NC_Directory{}) }
+
+// @Title	GetDemo
+// @Description 获取示例
+// @Param	name	string	true	"表单名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /getDemo [Post]
+func (c *DirectoryController) GetDemo() {
+	model := models.NC_Directory{}
+	c.responseSuccess(map[string]interface{}{"model": model})
+}
