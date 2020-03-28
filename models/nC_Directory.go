@@ -2,14 +2,14 @@ package models
 
 //文件夹结构 用来存储内容
 type NC_Directory struct {
-	ID        uint         `gorm:"primary_key"`
-	ServletId uint         //服务ID
-	Name      string       //名称
-	DirId     uint         //上级文件夹ID
-	Type      string       //类型为表单或逻辑
-	Logics    []NC_Logic   //
-	Forms     []NC_Form    //
-	Servlet   []NC_Servlet //
+	ID        uint   `gorm:"primary_key"`
+	ServletId uint   //服务ID
+	Name      string //名称
+	DirId     uint   //上级文件夹ID
+	Type      string //类型为表单或逻辑
+	//Logics    []NC_Logic   //
+	//Forms     []NC_Form    //
+	//Servlet   []NC_Servlet //
 }
 
 var routerCode = `
@@ -58,3 +58,23 @@ func init() {
 	beego.AddNamespace(ns)
 }
 `
+
+//
+func (d NC_Directory) GetNamespaceCode() string {
+	code := ""
+
+	return code
+
+}
+
+func GetDirectory(d NC_Directory) string {
+
+	code := ""
+
+	dirs := []NC_Directory{}
+	logics := []NC_Logic{}
+
+	NCDB.Where(&NC_Directory{DirId: d.ID}).Find(&dirs)
+	NCDB.Where(&NC_Logic{DirId: d.ID}).Find(&logics)
+	return code
+}

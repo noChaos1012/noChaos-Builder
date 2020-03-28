@@ -1,10 +1,10 @@
 package models
 
 import (
-	"com.waschild/noChaos-Server/models/noChaos"
 	"com.waschild/noChaos-Server/utils"
 	"fmt"
 	"os/exec"
+	"path"
 	"strings"
 )
 
@@ -138,7 +138,7 @@ func (variable Variable) Var() string {
 
 //以控制器创建逻辑方法
 func BuildLogic(servletName string, logicName string, code string) {
-	controllerDir := path.Join(noChaos.DeployPath, servletName, "controllers") //控制器文件夹
+	controllerDir := path.Join(utils.DeployPath, servletName, "controllers") //控制器文件夹
 	utils.WriteToFile(path.Join(controllerDir, logicName+".go"), code)
 	gofmtCMD := "gofmt -w  {{.logicName}}.go"
 	gofmtCMD = strings.Replace(gofmtCMD, "{{.logicName}}", logicName, -1)

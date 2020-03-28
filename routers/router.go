@@ -39,6 +39,11 @@ func init() {
 				&controllers.ServletController{},
 			),
 		),
+		beego.NSNamespace("/dir",
+			beego.NSInclude(
+				&controllers.DirectoryController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

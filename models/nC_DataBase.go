@@ -12,7 +12,7 @@ type NC_DataBase struct {
 	UserName  string
 	Password  string
 	DataBase  string
-	Charset   string `gorm:"varchar(255);default:utf8"`
+	Charset   string `gorm:"varchar(255)"`
 }
 
 // 获取连接代码

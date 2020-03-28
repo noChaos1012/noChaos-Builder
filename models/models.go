@@ -21,20 +21,31 @@ func init() {
 		NCDB.DB().SetMaxOpenConns(100)
 	}
 	//defer NCDB.Close()
-	NCDB.AutoMigrate(&NC_Form{}, &NC_Field{}, &NC_Relation{}, &NC_Servlet{}, &Henduoziduan{})
+	NCDB.AutoMigrate(
+		&NC_Build{},
+		&NC_Directory{},
+		&NC_Logic{},
+		&NC_Servlet{},
+		&NC_Form{},
+		&NC_DataBase{},
+		&NC_Deploy{},
+		&NC_Field{},
+		&NC_Relation{},
+		&NC_DownLoad{},
+		&Henduoziduan{})
 }
 
 //分页结构体
-type NC_Page struct {
+type Page struct {
 	PageNo     int
 	PageSize   int
 	TotalCount int
 	List       interface{}
 }
 
-func PageUtil(count int, pageNo int, pageSize int, list interface{}) NC_Page {
+func PageUtil(count int, pageNo int, pageSize int, list interface{}) Page {
 
-	return NC_Page{
+	return Page{
 		PageNo:     pageNo,
 		PageSize:   pageSize,
 		TotalCount: count,

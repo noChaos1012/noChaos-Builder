@@ -15,6 +15,101 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/dir/create": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "创建",
+                "operationId": "DirectoryController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dir/delete": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "删除表单",
+                "operationId": "DirectoryController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dir/getDetail": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "查询详情",
+                "operationId": "DirectoryController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dir/getMany": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "查询多个",
+                "operationId": "DirectoryController.GetMany",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dir/update": {
+            "post": {
+                "tags": [
+                    "dir"
+                ],
+                "description": "修改表单",
+                "operationId": "DirectoryController.Update",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/form/build": {
             "post": {
                 "tags": [
@@ -47,13 +142,13 @@
                 "tags": [
                     "form"
                 ],
-                "description": "创建服务",
-                "operationId": "FormController.CreatedServlet",
+                "description": "创建表单",
+                "operationId": "FormController.Create",
                 "parameters": [
                     {
                         "in": "string",
                         "name": "name",
-                        "description": "服务名称",
+                        "description": "表单名称",
                         "schema": {
                             "$ref": "#/definitions/true"
                         }
@@ -69,18 +164,126 @@
                 }
             }
         },
-        "/form/search": {
+        "/form/delete": {
             "post": {
                 "tags": [
                     "form"
                 ],
-                "description": "创建服务",
-                "operationId": "FormController.CreatedServlet",
+                "description": "删除表单",
+                "operationId": "FormController.Delete",
                 "parameters": [
                     {
                         "in": "string",
                         "name": "name",
-                        "description": "服务名称",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/form/getDetail": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "查询表单详情",
+                "operationId": "FormController.GetDetail",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/form/getMany": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "查询多个表单",
+                "operationId": "FormController.GetMany",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/form/initForm": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "初始化表单，初始化表单字段",
+                "operationId": "FormController.InitForm",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/form/update": {
+            "post": {
+                "tags": [
+                    "form"
+                ],
+                "description": "修改表单",
+                "operationId": "FormController.Update",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
                         "schema": {
                             "$ref": "#/definitions/true"
                         }
@@ -270,13 +473,64 @@
                 "tags": [
                     "servlet"
                 ],
-                "description": "创建服务",
-                "operationId": "ServletController.CreatedServlet",
+                "description": "创建",
+                "operationId": "ServletController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/servlet/delete": {
+            "post": {
+                "tags": [
+                    "servlet"
+                ],
+                "description": "删除",
+                "operationId": "ServletController.Delete",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/servlet/getDetail": {
+            "post": {
+                "tags": [
+                    "servlet"
+                ],
+                "description": "查询详情",
+                "operationId": "ServletController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/servlet/getMany": {
+            "post": {
+                "tags": [
+                    "servlet"
+                ],
+                "description": "查询多个",
+                "operationId": "ServletController.GetMany",
                 "parameters": [
                     {
                         "in": "string",
                         "name": "name",
-                        "description": "服务名称",
+                        "description": "表单名称",
                         "schema": {
                             "$ref": "#/definitions/true"
                         }
@@ -320,6 +574,23 @@
                 "responses": {
                     "200": {
                         "description": "打包成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/servlet/update": {
+            "post": {
+                "tags": [
+                    "servlet"
+                ],
+                "description": "修改表单",
+                "operationId": "ServletController.Update",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
                     },
                     "403": {
                         "description": "body is empty"
