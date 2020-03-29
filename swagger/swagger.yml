@@ -11,6 +11,85 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /build/buildForm:
+    post:
+      tags:
+      - build
+      description: 构建表单源码
+      operationId: BuildController.BuildForm
+      parameters:
+      - in: string
+        name: name
+        description: 表单名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
+  /build/buildForms:
+    post:
+      tags:
+      - build
+      description: 构建服务所有form源码
+      operationId: BuildController.BuildForms
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
+  /build/buildModelsGo:
+    post:
+      tags:
+      - build
+      description: 构建服务models.go源码
+      operationId: BuildController.BuildModelsGo
+      parameters:
+      - in: string
+        name: name
+        description: 表单名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
+  /build/buildRouterGo:
+    post:
+      tags:
+      - build
+      description: 构建服务router.go源码
+      operationId: BuildController.BuildRouterGo
+      parameters:
+      - in: string
+        name: name
+        description: 表单名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
+  /build/buildServlet:
+    post:
+      tags:
+      - build
+      description: 构建服务源码
+      operationId: BuildController.BuildServlet
+      parameters:
+      - in: string
+        name: name
+        description: 表单名称
+        schema:
+          $ref: '#/definitions/true'
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
   /build/create:
     post:
       tags:
@@ -78,6 +157,17 @@ paths:
           description: 编译成功
         "403":
           description: body is empty
+  /db/createDB:
+    post:
+      tags:
+      - db
+      description: 创建数据库
+      operationId: DatabaseController.CreateDB
+      responses:
+        "200":
+          description: 编译成功
+        "403":
+          description: body is empty
   /db/delete:
     post:
       tags:
@@ -95,12 +185,6 @@ paths:
       - db
       description: 获取示例
       operationId: DatabaseController.GetDemo
-      parameters:
-      - in: string
-        name: name
-        description: 表单名称
-        schema:
-          $ref: '#/definitions/true'
       responses:
         "200":
           description: 编译成功
@@ -294,7 +378,7 @@ paths:
     post:
       tags:
       - form
-      description: 创建服务
+      description: 创建表单代码文件
       operationId: FormController.CreatedServlet
       parameters:
       - in: string

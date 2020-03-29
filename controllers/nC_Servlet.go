@@ -3,6 +3,7 @@ package controllers
 import (
 	"com.waschild/noChaos-Server/build"
 	"com.waschild/noChaos-Server/models"
+	"encoding/json"
 )
 
 type ServletController struct {
@@ -14,7 +15,17 @@ type ServletController struct {
 // @Success 200 编译成功
 // @Failure 403 body is empty
 // @router /create [Post]
-func (c *ServletController) Create() { c.CreateWithModel(&models.NC_Servlet{}) }
+func (c *ServletController) Create() {
+
+	servlet := models.NC_Servlet{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &servlet)
+
+	if c.handlerErrOK(err) {
+		models.NCDB.Create(&servlet)
+		servlet.Initialize() //初始化设置
+		c.responseSuccess(map[string]interface{}{"model": &servlet})
+	}
+}
 
 // @Title	GetMany
 // @Description 查询多个

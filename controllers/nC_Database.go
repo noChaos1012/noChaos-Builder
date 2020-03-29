@@ -1,6 +1,9 @@
 package controllers
 
-import "com.waschild/noChaos-Server/models"
+import (
+	"com.waschild/noChaos-Server/models"
+	"encoding/json"
+)
 
 type DatabaseController struct {
 	NCController
@@ -46,11 +49,24 @@ func (c *DatabaseController) Delete() { c.DeleteWithModel(&models.NC_Database{})
 
 // @Title	GetDemo
 // @Description 获取示例
-// @Param	name	string	true	"表单名称"
 // @Success 200 编译成功
 // @Failure 403 body is empty
 // @router /getDemo [Post]
 func (c *DatabaseController) GetDemo() {
 	model := models.NC_Database{}
 	c.responseSuccess(map[string]interface{}{"model": model})
+}
+
+// @Title	CreateDB
+// @Description 创建数据库
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /createDB [Post]
+func (c *DatabaseController) CreateDB() {
+	servlet := models.NC_Servlet{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &servlet)
+	if c.handlerErrOK(err) {
+		servlet.CreateDB()
+		c.responseSuccess(map[string]interface{}{"models": servlet})
+	}
 }

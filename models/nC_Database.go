@@ -1,21 +1,23 @@
 package models
 
-import (
-	"fmt"
-)
+import "github.com/jinzhu/gorm"
 
 //数据库
 type NC_Database struct {
+	gorm.Model
 	ServletId uint
 	Port      string
 	Host      string
 	UserName  string
 	Password  string
-	DataBase  string
 	Charset   string `gorm:"varchar(255)"`
 }
 
-// 获取连接代码
-func (db NC_Database) GetConnectionCode() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", db.UserName, db.Password, db.Host, db.Port, db.DataBase, db.Charset)
+//创建数据库
+func (servlet NC_Servlet) CreateDB() {
+	NCDB.Debug().First(&servlet)
+
+	NCDB.Exec("Create Database If Not Exists " +
+		servlet.GetName() +
+		" Character Set UTF8 Collate utf8_general_ci ")
 }

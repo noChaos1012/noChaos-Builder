@@ -83,7 +83,9 @@ func init() {
 
 }
 
+//获取的model代码
 func (form NC_Form) GetCode() string {
+	fmt.Println("form is : ", form)
 
 	code := strings.Replace(modelCode, "{{.ModelName}}", utils.GetPinYin(form.Name), -1)
 
@@ -98,12 +100,17 @@ func (form NC_Form) GetCode() string {
 
 }
 
+//获取表单名称
+func (form NC_Form) GetName() string {
+	return utils.GetPinYin(form.Name)
+}
+
 //获取编码
 func (f NC_FormField) GetCode(IsStore bool) string {
-	code := strings.Replace(fieldCode, "{{.Name}}", utils.GetPinYin(f.Name), -1)
+	code := strings.Replace(fieldCode, "{{.Name}}", f.GetName(), -1)
 	code = strings.Replace(code, "{{.Type}}", f.GetGoType(), -1)
 
-	tagStr := `json:"` + utils.GetPinYin(f.Name) + `"`
+	tagStr := `json:"` + f.GetName() + `"`
 
 	if !IsStore {
 		tagStr = "`" + tagStr + "`"
@@ -111,8 +118,8 @@ func (f NC_FormField) GetCode(IsStore bool) string {
 		return code
 	}
 
-	tagStr = tagStr + ` gorm:"column:` + utils.GetPinYin(f.Name) + `;`
-	//tagStr := ` gorm:"column:`+ utils.GetPinYin(f.Name) + `";`
+	tagStr = tagStr + ` gorm:"column:` + f.GetName() + `;`
+	//tagStr := ` gorm:"column:`+ f.GetName() + `";`
 	tagStr = tagStr + f.GetSQLType()
 	if f.IsKey {
 		tagStr += "primary_key;"
@@ -131,7 +138,11 @@ func (f NC_FormField) GetCode(IsStore bool) string {
 	}
 
 	if len(f.Default) > 0 {
-		tagStr += `default:` + f.Default + `;`
+		if f.Type == "文本" {
+			tagStr += `default:'` + f.Default + `';`
+		} else {
+			tagStr += `default:` + f.Default + `;`
+		}
 	}
 
 	if strings.HasSuffix(tagStr, ";") {
@@ -158,6 +169,11 @@ func (field NC_FormField) GetGoType() string {
 		fieldType = "[]" + fieldType
 	}
 	return fieldType
+}
+
+//获取字段名称
+func (field NC_FormField) GetName() string {
+	return utils.GetPinYin(field.Name)
 }
 
 //获取数据库字段类型
