@@ -52,7 +52,7 @@ func (c *BuildController) BuildForm() {
 	form := models.NC_Form{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if c.handlerErrOK(err) {
-		form.Build()
+		form.BuildForm()
 		c.responseSuccess(map[string]interface{}{"model": form})
 	}
 }
@@ -107,7 +107,7 @@ func (c *BuildController) BuildForms() {
 		models.NCDB.Debug().First(&servlet)
 		models.NCDB.Debug().Model(&servlet).Related(&servlet.Forms, "ServletId")
 		for _, form := range servlet.Forms {
-			form.Build()
+			form.BuildForm()
 		}
 		c.responseSuccess(map[string]interface{}{"model": servlet})
 	}

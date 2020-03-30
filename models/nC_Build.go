@@ -18,7 +18,7 @@ type NC_Build struct {
 }
 
 //构建form代码
-func (form NC_Form) Build() {
+func (form NC_Form) BuildForm() {
 
 	NCDB.Debug().First(&form)
 	NCDB.Debug().Model(&form).Related(&form.Fields, "FormId")
@@ -186,4 +186,23 @@ func (servlet NC_Servlet) BuildRouter() {
 	cmd := exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "routers")+";"+strings.Replace(gofmtCMD, "{{.File}}", "router.go", -1))
 	cmd.Run()
 
+}
+
+//以控制器创建逻辑方法
+func (logic NC_Logic) BuildLogic() {
+
+	NCDB.Debug().First(&logic)
+	//NCDB.Debug().Model(&logic).Related(&logic.Nodes, "LogicId")
+
+	servlet := NC_Servlet{}
+	servlet.ID = logic.ServletId
+	NCDB.Debug().First(&servlet)
+
+	controllerDir := path.Join(utils.DeployPath, servlet.GetName(), "controllers") //控制器文件夹
+	utils.WriteToFile(path.Join(controllerDir, logic.GetName()+".go"), logic.GetCode())
+	gofmtCMD := "gofmt -w  {{.logicName}}.go"
+	gofmtCMD = strings.Replace(gofmtCMD, "{{.logicName}}", logic.GetName(), -1)
+	cmd := exec.Command("/bin/bash", "-c", "cd "+controllerDir+";"+gofmtCMD)
+
+	fmt.Println(cmd.Run())
 }
