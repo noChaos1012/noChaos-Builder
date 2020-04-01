@@ -193,16 +193,24 @@ func (logic NC_Logic) BuildLogic() {
 
 	NCDB.Debug().First(&logic)
 	//NCDB.Debug().Model(&logic).Related(&logic.Nodes, "LogicId")
+	fmt.Println(&logic.Nodes)
 
-	servlet := NC_Servlet{}
-	servlet.ID = logic.ServletId
-	NCDB.Debug().First(&servlet)
+	logic.CompileProperties()
 
-	controllerDir := path.Join(utils.DeployPath, servlet.GetName(), "controllers") //控制器文件夹
-	utils.WriteToFile(path.Join(controllerDir, logic.GetName()+".go"), logic.GetCode())
-	gofmtCMD := "gofmt -w  {{.logicName}}.go"
-	gofmtCMD = strings.Replace(gofmtCMD, "{{.logicName}}", logic.GetName(), -1)
-	cmd := exec.Command("/bin/bash", "-c", "cd "+controllerDir+";"+gofmtCMD)
+	fmt.Println(logic.Nodes)
+	fmt.Println(logic.Flows)
+	fmt.Println(logic.Inputs)
+	fmt.Println(logic.Outputs)
 
-	fmt.Println(cmd.Run())
+	//servlet := NC_Servlet{}
+	//servlet.ID = logic.ServletId
+	//NCDB.Debug().First(&servlet)
+	//
+	//controllerDir := path.Join(utils.DeployPath, servlet.GetName(), "controllers") //控制器文件夹
+	//utils.WriteToFile(path.Join(controllerDir, logic.GetName()+".go"), logic.GetCode())
+	//gofmtCMD := "gofmt -w  {{.logicName}}.go"
+	//gofmtCMD = strings.Replace(gofmtCMD, "{{.logicName}}", logic.GetName(), -1)
+	//cmd := exec.Command("/bin/bash", "-c", "cd "+controllerDir+";"+gofmtCMD)
+	//
+	//fmt.Println(cmd.Run())
 }

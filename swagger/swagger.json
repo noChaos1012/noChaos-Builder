@@ -3,7 +3,7 @@
     "info": {
         "title": "beego Test API",
         "description": "beego has a very cool tools to autogenerate documents for your API",
-        "version": "1.0.1",
+        "version": "1.0.0",
         "termsOfService": "http://beego.me/",
         "contact": {
             "email": "astaxie@gmail.com"
@@ -49,6 +49,23 @@
                 ],
                 "description": "构建服务所有form源码",
                 "operationId": "BuildController.BuildForms",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/build/buildLogic": {
+            "post": {
+                "tags": [
+                    "build"
+                ],
+                "description": "构建逻辑",
+                "operationId": "BuildController.BuildLogic",
                 "responses": {
                     "200": {
                         "description": "编译成功"
@@ -844,6 +861,23 @@
                 }
             }
         },
+        "/logic/create": {
+            "post": {
+                "tags": [
+                    "logic"
+                ],
+                "description": "创建",
+                "operationId": "LogicController.Create",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/logic/getDemo": {
             "post": {
                 "tags": [
@@ -851,6 +885,50 @@
                 ],
                 "description": "获取示例",
                 "operationId": "LogicController.GetDemo",
+                "parameters": [
+                    {
+                        "in": "string",
+                        "name": "name",
+                        "description": "表单名称",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/logic/getDetail": {
+            "post": {
+                "tags": [
+                    "logic"
+                ],
+                "description": "查询详情",
+                "operationId": "LogicController.GetDetail",
+                "responses": {
+                    "200": {
+                        "description": "编译成功"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/logic/getMany": {
+            "post": {
+                "tags": [
+                    "logic"
+                ],
+                "description": "查询多个",
+                "operationId": "LogicController.GetMany",
                 "parameters": [
                     {
                         "in": "string",

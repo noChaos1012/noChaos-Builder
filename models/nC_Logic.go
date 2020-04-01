@@ -2,6 +2,8 @@ package models
 
 import (
 	"com.waschild/noChaos-Server/utils"
+	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -9,12 +11,19 @@ import (
 type NC_Logic struct {
 	ID        uint `gorm:"primary_key"`
 	ServletId uint
-	DirId     uint       //文件夹ID
-	Name      string     `json:"name"`
-	Inputs    []Variable `json:"inputs"`  //输入变量
-	Outputs   []Variable `json:"outputs"` //输出变量
-	Nodes     []Node     `json:"nodes"`   //运算节点
-	Flows     []Flow     `json:"flows"`   //流向
+	DirId     uint //文件夹ID
+	Name      string
+	//Inputs    string //输入变量
+
+	InputsJson  interface{} `gorm:"type:text"`
+	OutputsJson interface{} `gorm:"type:text"`
+	NodesJson   interface{} `gorm:"type:text"`
+	FlowsJson   interface{} `gorm:"type:text"`
+
+	Inputs  []Variable //输入变量
+	Outputs []Variable //输出变量
+	Nodes   []Node     //运算节点
+	Flows   []Flow     //流向
 }
 
 var controllerCode = `
@@ -60,6 +69,23 @@ func (l NC_Logic) GetCode() string {
 //数据库名称
 func (logic NC_Logic) GetName() string {
 	return utils.GetPinYin(logic.Name) + "_nc_" + strconv.Itoa(int(logic.ID))
+}
+
+//编译属性
+func (logic *NC_Logic) CompileProperties() {
+
+	properties := []interface{}{&logic.Nodes, &logic.Flows, &logic.Inputs, &logic.Outputs}
+
+	for i, jsonCode := range []interface{}{logic.NodesJson, logic.FlowsJson, logic.InputsJson, logic.OutputsJson} {
+
+		t, ok := jsonCode.([]uint8)
+		if ok {
+			err := json.Unmarshal([]byte(string(t)), properties[i])
+			if err != nil {
+				fmt.Println("json.Unmarshal is err:", err.Error())
+			}
+		}
+	}
 }
 
 //操作节点

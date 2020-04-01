@@ -113,6 +113,20 @@ func (c *BuildController) BuildForms() {
 	}
 }
 
+// @Title	BuildLogic
+// @Description 构建逻辑
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /buildLogic [Post]
+func (c *BuildController) BuildLogic() {
+	logic := models.NC_Logic{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &logic)
+	if c.handlerErrOK(err) {
+		logic.BuildLogic()
+		c.responseSuccess(map[string]interface{}{"model": logic})
+	}
+}
+
 // @Title	BuildServlet
 // @Description 构建服务源码
 // @Param	name	string	true	"表单名称"
