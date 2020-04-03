@@ -17,11 +17,11 @@ func (ncc *NCController) handlerErrOK(err error) bool {
 
 	if err != nil {
 		fmt.Println("come to error ")
-		panic(err)
 		res := make(map[string]interface{})
 		res["status"] = "failure"
 		res["description"] = "接收数据解析失败"
 		ncc.Data["json"] = res
+		panic(err)
 		return false
 	}
 	return true

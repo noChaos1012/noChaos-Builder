@@ -195,12 +195,15 @@ func (logic NC_Logic) BuildLogic() {
 	//NCDB.Debug().Model(&logic).Related(&logic.Nodes, "LogicId")
 	fmt.Println(&logic.Nodes)
 
+	//组装属性
 	logic.CompileProperties()
 
 	fmt.Println(logic.Nodes)
 	fmt.Println(logic.Flows)
-	fmt.Println(logic.Inputs)
-	fmt.Println(logic.Outputs)
+	fmt.Println(logic.Input)
+	fmt.Println(logic.Output)
+
+	fmt.Println("code is", logic.GetCode())
 
 	//servlet := NC_Servlet{}
 	//servlet.ID = logic.ServletId

@@ -23,8 +23,8 @@ func (c *LogicController) Create() {
 
 		model.NodesJson, _ = json.Marshal(model.NodesJson)
 		model.FlowsJson, _ = json.Marshal(model.FlowsJson)
-		model.OutputsJson, _ = json.Marshal(model.OutputsJson)
-		model.InputsJson, _ = json.Marshal(model.InputsJson)
+		model.OutputJson, _ = json.Marshal(model.OutputJson)
+		model.InputJson, _ = json.Marshal(model.InputJson)
 
 		fmt.Println(model.NodesJson)
 

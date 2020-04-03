@@ -35,10 +35,9 @@ type NC_FormField struct {
 	Size          int    //长度
 	Maximum       int    //精度
 	Decimal       int    //标度
-	IsArray       bool   //是否是复数
 }
 
-//关联
+//关联--拓展
 type NC_FormRelation struct {
 	Type       string //关联类型、一对多、多对多
 	FromFormId uint   //来自对象
@@ -164,10 +163,6 @@ func (field NC_FormField) GetGoType() string {
 		fmt.Println(fieldType, field)
 	}
 
-	//是数组
-	if field.IsArray {
-		fieldType = "[]" + fieldType
-	}
 	return fieldType
 }
 

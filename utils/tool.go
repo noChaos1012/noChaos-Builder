@@ -39,3 +39,13 @@ func GetPinYin(chinese string) string {
 	}
 	return string(strArry)
 }
+
+//获取首字母小写的拼音
+func GetPinYinLittle(chinese string) string {
+	preWord := pinyin.Romanize(chinese)
+	strArry := []rune(preWord)
+	if strArry[0] >= 71 && strArry[0] <= 96 {
+		strArry[0] += 32
+	}
+	return string(strArry)
+}

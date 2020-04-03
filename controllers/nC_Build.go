@@ -141,3 +141,56 @@ func (c *BuildController) BuildServlet() {
 	//	c.responseSuccess(map[string]interface{}{"models": form})
 	//}
 }
+
+// @Title	TestStruct
+// @Description 测试结构
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /testStruct [Post]
+func (ncc *BuildController) TestStruct() {
+
+	//fmt.Println()
+
+	//p2 := NC_Property{}
+	//
+	//err := json.Unmarshal(ncc.Ctx.Input.RequestBody, &p2)
+	//
+	//if ncc.handlerErrOK(err) {
+	//
+	//	var structs []string
+	//
+	//	fmt.Println(GetCode(p2, &structs))
+	//
+	//	ncc.responseSuccess(map[string]interface{}{"model": p2})
+	//}
+}
+
+//func GetCode(property NC_Property, structs *[]string) string {
+//
+//	code := property.Name + " "
+//	if property.Multiple {
+//		code += "[]"
+//	}
+//	if property.Type == "custom" {
+//		code += getStructName(property.Name)
+//
+//	} else {
+//		code += property.Type
+//	}
+//
+//	if property.Type == "custom" {
+//
+//		var typeCode = `
+//type {{.TypeName}} struct{
+//	{{.TypeProperties}}
+//}
+//`
+//		typeCode = strings.Replace(typeCode, "{{.TypeName}}", property.Name, -1)
+//		typeCode = strings.Replace(typeCode, "{{.TypeProperties}}", buildStruct(property.Properties, structs), -1)
+//
+//		*structs = append(*structs, typeCode)
+//
+//	}
+//
+//	return code
+//}

@@ -70,6 +70,51 @@ func (servlet NC_Servlet) Initialize() {
 	cmd = exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "conf")+";"+strings.Replace(gofmtCMD, "{{.File}}", "app.conf", -1))
 	cmd.Run()
 
+	var baseLogicCode = `
+	package controllers
+	
+	import (
+		"encoding/json"
+		"fmt"
+		"github.com/astaxie/beego"
+	)
+	
+	//统一处理控制器
+	type NCController struct {
+		beego.Controller
+	}
+	
+	// 处理是否解析成功
+	func (ncc *NCController) handlerErrOK(err error) bool {
+	
+		if err != nil {
+			fmt.Println("come to error ")
+			res := make(map[string]interface{})
+			res["status"] = "failure"
+			res["description"] = "接收数据解析失败"
+			ncc.Data["json"] = res
+			panic(err)
+			return false
+		}
+		return true
+	}
+	
+	// 返回成功
+	func (ncc *NCController) responseSuccess(result interface{}) {
+	
+		res := make(map[string]interface{})
+		res["list"] = result
+		res["status"] = "success"
+		res["description"] = "操作成功"
+	
+		ncc.Data["json"] = res
+		ncc.ServeJSON()
+	}
+	`
+	utils.WriteToFile(path.Join(appPath, "controllers", "NCController.go"), baseLogicCode)
+	cmd = exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "controllers")+";"+strings.Replace(gofmtCMD, "{{.File}}", "NCController.go", -1))
+	cmd.Run()
+
 	//数据库创建
 	NCDB.Exec("Create Database If Not Exists " +
 		servlet.GetName() +
