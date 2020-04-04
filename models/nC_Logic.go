@@ -39,29 +39,36 @@ var controllerCode = `
 	type {{.logicName}} struct {
 		NCController
 	}
-	
-	func  (c *{{.logicName}}) {{.logicName}} (){
-	var inputNode t_inputNode
-	var outputNode t_outputNode
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &inputNode)
 
-	if c.handlerErrOK(err) {
-		{{.logic}}
-		c.responseSuccess(map[string]interface{}{"output": outputNode})
+	func  (c *{{.logicName}}) {{.logicName}} (){
+		var inputNode T_inputNode{{.logicID}}
+		var outputNode T_outputNode{{.logicID}}
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &inputNode)
+		if c.handlerErrOK(err) {
+			c.LogicBody(&inputNode,&outputNode)
+			c.responseSuccess(map[string]interface{}{"output": outputNode})
+		}
 	}
+
+
+	func (c *{{.logicName}}) LogicBody(inputNode *T_inputNode{{.logicID}},outputNode *T_outputNode{{.logicID}}) {
+			{{.logic}}
 	}
 `
 
 //获取代码
 func (l NC_Logic) GetCode() string {
-	code := strings.Replace(controllerCode, "{{.logicName}}", utils.GetPinYin(l.Name), -1)
-	code = strings.Replace(code, "{{.inputStructCode}}", getStructCode(l.Input.Properties, "t_inputNode"), -1)
-	code = strings.Replace(code, "{{.outputStructCode}}", getStructCode(l.Output.Properties, "t_outputNode"), -1)
+	code := strings.Replace(controllerCode, "{{.logicName}}", utils.GetPinYin(l.Name+strconv.Itoa(int(l.ID))), -1)
+	utils.GetPinYin(l.Name + strconv.Itoa(int(l.ID)))
+
+	code = strings.Replace(code, "{{.inputStructCode}}", getStructCode(l.Input.Properties, utils.GetPinYin("T_inputNode"+strconv.Itoa(int(l.ID)))), -1)
+	code = strings.Replace(code, "{{.outputStructCode}}", getStructCode(l.Output.Properties, "T_outputNode"+strconv.Itoa(int(l.ID))), -1)
+	code = strings.Replace(code, "{{.logicID}}", strconv.Itoa(int(l.ID)), -1)
 
 	nodeCode := ""
 	structCode := ""
 	for _, node := range l.Nodes {
-		nodeCode += node.getCode()
+		nodeCode += l.getNodeCode(node)
 		structCode += "\n" + node.getStructCode()
 	}
 	code = strings.Replace(code, "{{.logic}}", nodeCode, -1)
@@ -105,7 +112,7 @@ type Node struct {
 }
 
 //获取节点代码
-func (node Node) getCode() string {
+func (logic *NC_Logic) getNodeCode(node Node) string {
 	code := ""
 	switch node.Type {
 	case "assign":
@@ -116,7 +123,10 @@ func (node Node) getCode() string {
 			for _, assign := range assigns {
 				split = append(split, assign.Key+" = "+assign.Value)
 			}
-			return strings.Join(split, "\t\n") + "\t\n"
+			assignCode := strings.Join(split, "\t\n") + "\t\n"
+			assignCode = strings.Replace(assignCode, "{{inputNode}}.", "T_inputNode"+strconv.Itoa(int(logic.ID))+".", -1)
+			assignCode = strings.Replace(assignCode, "{{outputNode}}.", "T_outputNode"+strconv.Itoa(int(logic.ID))+".", -1)
+			return assignCode
 		}(node.Declare)
 
 	case "variable":
@@ -189,7 +199,7 @@ func getStructCode(properties []NC_Property, structName string) string {
 	PropertiesCode := ""
 	for _, p := range properties {
 
-		pCode := utils.GetPinYinLittle(p.Name) + " "
+		pCode := utils.GetPinYin(p.Name) + " "
 		if p.Multiple {
 			pCode += "[]"
 		}
@@ -200,7 +210,6 @@ func getStructCode(properties []NC_Property, structName string) string {
 
 		case "custom":
 			pCode += getStructName(p.Name)
-			fmt.Println()
 			PrefixStructCode = getStructCode(p.Properties, getStructName(p.Name))
 
 		default:
