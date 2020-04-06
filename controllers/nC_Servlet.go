@@ -22,6 +22,14 @@ func (c *ServletController) Create() {
 
 	if c.handlerErrOK(err) {
 		models.NCDB.Create(&servlet)
+		//rootDir := models.NC_Directory{}
+		//rootDir.ServletId = servlet.ID
+		//rootDir.ID = uint(0)
+		//rootDir.Name = servlet.Name
+		//rootDir.Type = "服务"
+		////创建初始化目录
+		//models.NCDB.Create(&rootDir)
+
 		servlet.Initialize() //初始化设置
 		c.responseSuccess(map[string]interface{}{"model": &servlet})
 	}

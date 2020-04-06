@@ -15,33 +15,6 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/build/buildForm": {
-            "post": {
-                "tags": [
-                    "build"
-                ],
-                "description": "构建表单源码",
-                "operationId": "BuildController.BuildForm",
-                "parameters": [
-                    {
-                        "in": "string",
-                        "name": "name",
-                        "description": "表单名称",
-                        "schema": {
-                            "$ref": "#/definitions/true"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "编译成功"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/build/buildForms": {
             "post": {
                 "tags": [
@@ -76,88 +49,7 @@
                 }
             }
         },
-        "/build/buildModelsGo": {
-            "post": {
-                "tags": [
-                    "build"
-                ],
-                "description": "构建服务models.go源码",
-                "operationId": "BuildController.BuildModelsGo",
-                "parameters": [
-                    {
-                        "in": "string",
-                        "name": "name",
-                        "description": "表单名称",
-                        "schema": {
-                            "$ref": "#/definitions/true"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "编译成功"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/build/buildRouterGo": {
-            "post": {
-                "tags": [
-                    "build"
-                ],
-                "description": "构建服务router.go源码",
-                "operationId": "BuildController.BuildRouterGo",
-                "parameters": [
-                    {
-                        "in": "string",
-                        "name": "name",
-                        "description": "表单名称",
-                        "schema": {
-                            "$ref": "#/definitions/true"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "编译成功"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/build/buildServlet": {
-            "post": {
-                "tags": [
-                    "build"
-                ],
-                "description": "构建服务源码",
-                "operationId": "BuildController.BuildServlet",
-                "parameters": [
-                    {
-                        "in": "string",
-                        "name": "name",
-                        "description": "表单名称",
-                        "schema": {
-                            "$ref": "#/definitions/true"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "编译成功"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/build/create": {
             "post": {
                 "tags": [
                     "build"
@@ -1273,6 +1165,13 @@
                         "description": "body is empty"
                     }
                 }
+            }
+        },
+        "/test/Ceshiluoji20": {
+            "post": {
+                "tags": [
+                    "test"
+                ]
             }
         },
         "/user/": {

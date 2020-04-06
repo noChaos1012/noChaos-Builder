@@ -1,9 +1,12 @@
 package models
 
 import (
+	"com.waschild/noChaos-Server/utils"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"os/exec"
+	"path"
 )
 
 var NCDB *gorm.DB
@@ -32,7 +35,7 @@ func init() {
 		&NC_FormField{},
 		&NC_FormRelation{},
 		&NC_DeployDownload{},
-		&Henduoziduan{})
+		&NC_FTP{})
 }
 
 //分页结构体
@@ -51,4 +54,10 @@ func PageUtil(count int, pageNo int, pageSize int, list interface{}) Page {
 		TotalCount: count,
 		List:       list,
 	}
+}
+
+func WriteAndFormat(filePath, fileName, fileCode string) {
+	utils.WriteToFile(path.Join(filePath, fileName), fileCode)
+	cmd := exec.Command("/bin/bash", "-c", "cd "+filePath+";"+"gofmt -w  "+fileName)
+	cmd.Run()
 }

@@ -4,7 +4,6 @@ import (
 	"com.waschild/noChaos-Server/utils"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"os/exec"
 	"path"
 	"strings"
 )
@@ -15,24 +14,6 @@ type NC_Build struct {
 	ServletId          uint `gorm:"not null"`
 	Version            string
 	VersionDescription string
-}
-
-//构建form代码
-func (form NC_Form) BuildForm() {
-
-	NCDB.Debug().First(&form)
-	NCDB.Debug().Model(&form).Related(&form.Fields, "FormId")
-
-	servlet := NC_Servlet{}
-	servlet.ID = form.ServletId
-	NCDB.Debug().First(&servlet)
-	//绝对路径
-	appPath := utils.DeployPath + "/" + servlet.GetName()
-	//写入文件
-	utils.WriteToFile(path.Join(appPath, "models", utils.GetPinYin(form.Name)+".go"), form.GetCode())
-	gofmtCMD := "gofmt -w  {{.File}}"
-	cmd := exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "models")+";"+strings.Replace(gofmtCMD, "{{.File}}", utils.GetPinYin(form.Name)+".go", -1))
-	cmd.Run()
 }
 
 //构建model代码
@@ -84,28 +65,14 @@ func (servlet NC_Servlet) BuildModels() (bool, string) {
 	}
 	`
 
-	NCDB.Debug().First(&servlet)
-	NCDB.Debug().Model(&servlet).Related(&servlet.Forms, "ServletId")
-	if len(servlet.Forms) == 0 {
-		return false, "未配置表单数据"
-	}
-
-	db := NC_Database{}
-	db.ServletId = servlet.ID
-	NCDB.Where(&db).Find(&db)
-	if db.Host == "" {
-		return false, "未配置数据库"
-	}
-
 	modelsCode = strings.Replace(modelsCode,
 		"{{.DBConnection}}",
-		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", db.UserName, db.Password, db.Host, db.Port, servlet.GetName(), db.Charset),
+		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", servlet.Database.UserName, servlet.Database.Password, servlet.Database.Host, servlet.Database.Port, servlet.GetName(), servlet.Database.Charset),
 		-1)
-
 	modelsCode = strings.Replace(modelsCode,
 		"{{.MigrateForms}}",
 		func(servlet NC_Servlet) string {
-			NCDB.Debug().Model(&servlet).Related(&servlet.Forms, "ServletId")
+			NCDB.Model(&servlet).Related(&servlet.Forms, "ServletId")
 			codeArr := []string{}
 			for _, form := range servlet.Forms {
 				if form.IsStore {
@@ -116,104 +83,94 @@ func (servlet NC_Servlet) BuildModels() (bool, string) {
 		}(servlet),
 		-1)
 
-	appPath := utils.DeployPath + "/" + servlet.GetName()
-	utils.WriteToFile(path.Join(appPath, "models", "models.go"), modelsCode)
+	WriteAndFormat(path.Join(utils.DeployPath, servlet.GetName(), "models"), "models.go", modelsCode)
 
-	gofmtCMD := "gofmt -w  {{.File}}"
-	cmd := exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "models")+";"+strings.Replace(gofmtCMD, "{{.File}}", "models.go", -1))
-	cmd.Run()
 	return true, ""
 }
 
-//构建程序源码
-func (servlet NC_Servlet) BuildRouter() {
+//构建路由程序源码
+func (servlet NC_Servlet) BuildRouter(version, description string) {
 	var routerCode = `
-	// @APIVersion 1.0.0
-	// @Title beego Test API
-	// @Description beego has a very cool tools to autogenerate documents for your API
-	// @Contact astaxie@gmail.com
-	// @TermsOfServiceUrl http://beego.me/
-	// @License Apache 2.0
-	// @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
+	// @APIVersion {{.version}}
+	// @Description {{.description}}
+	// @Title noChaos API Service
 	package routers
 	
 	{{.Package}}
-	
+
 	func init() {
 		{{.Namespace}}
 	}
 	`
+	routerCode = strings.Replace(routerCode, "{{.version}}", version, -1)
+	routerCode = strings.Replace(routerCode, "{{.description}}", description, -1)
 
-	NCDB.Debug().First(&servlet)
-	NCDB.Debug().Model(&servlet).Related(&servlet.Logics, "ServletId")
-
-	routerCode = strings.Replace(routerCode, "{{.Package}}", func(logics []NC_Logic) string {
-		if len(logics) > 0 {
-			pkgCode := `	import (
+	routerCode = strings.Replace(routerCode, "{{.Package}}", func(servlet NC_Servlet) string {
+		pkgCode := `	import (
 				"noChaos-Server_Data/{{.ServletName}}/controllers"
 				"github.com/astaxie/beego"
 			)`
-			return strings.Replace(pkgCode, "{{.ServletName}}", servlet.GetName(), -1)
-		} else {
-			return ""
-		}
-	}(servlet.Logics), -1)
+		return strings.Replace(pkgCode, "{{.ServletName}}", servlet.GetName(), -1)
+	}(servlet), -1)
 
 	routerCode = strings.Replace(routerCode, "{{.Namespace}}",
-		func(logics []NC_Logic) string {
-			//ns := beego.NewNamespace("/v1",
-			//	beego.NSNamespace("/object",
-			//		beego.NSInclude(
-			//			&controllers.ObjectController{},
-			//		),
-			//	),
-			//)
-			//beego.AddNamespace(ns)
-			if len(logics) > 0 {
-				return ""
-			} else {
-				return ""
-			}
-		}(servlet.Logics), -1)
+		func(s NC_Servlet) string {
+			nsCode := `
+			ns := beego.NewNamespace("{{.servletName}}",
+				{{.namespace}}
+			)
+			beego.AddNamespace(ns)
+			`
+			nsCode = strings.Replace(nsCode, "{{.servletName}}", s.GetName(), -1)
 
-	appPath := utils.DeployPath + "/" + servlet.GetName()
+			rootDir := NC_Directory{}
+			rootDir.ServletId = s.ID
+			rootDir.ID = 0
+			nsCode = strings.Replace(nsCode, "{{.namespace}}", rootDir.GetNamespaceCode(), -1)
 
-	fmt.Println(routerCode)
+			return nsCode
 
-	utils.WriteToFile(path.Join(appPath, "routers", "router.go"), routerCode)
+		}(servlet), -1)
 
-	gofmtCMD := "gofmt -w  {{.File}}"
-	cmd := exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "routers")+";"+strings.Replace(gofmtCMD, "{{.File}}", "router.go", -1))
-	cmd.Run()
+	WriteAndFormat(path.Join(utils.DeployPath, servlet.GetName(), "routers"), "router.go", routerCode)
+}
 
+//构建服务代码
+func (build *NC_Build) BuildServlet() (bool, string) {
+
+	servlet := NC_Servlet{}
+	servlet.ID = build.ServletId
+
+	NCDB.First(&servlet)
+
+	NCDB.Where(&NC_Database{ID: servlet.DatabaseID}).First(&servlet.Database)
+	NCDB.Model(&servlet).Related(&servlet.Forms, "ServletId")
+
+	if servlet.DatabaseID > 0 && len(servlet.Forms) > 0 {
+		for _, form := range servlet.Forms {
+			form.BuildForm(servlet.GetName())
+		}
+		servlet.BuildModels()
+	}
+
+	NCDB.Model(&servlet).Related(&servlet.Logics, "ServletId")
+	if len(servlet.Logics) > 0 {
+		for _, logic := range servlet.Logics {
+			logic.BuildLogic(servlet.GetName())
+		}
+		servlet.BuildRouter(build.Version, build.VersionDescription)
+	}
+	return true, "构建成功"
 }
 
 //以控制器创建逻辑方法
-func (logic NC_Logic) BuildLogic() {
+func (logic NC_Logic) BuildLogic(servletName string) {
+	logic.CompileProperties() //组装属性
+	WriteAndFormat(path.Join(utils.DeployPath, servletName, "controllers"), logic.GetName()+".go", logic.GetCode())
+}
 
-	NCDB.Debug().First(&logic)
-	//NCDB.Debug().Model(&logic).Related(&logic.Nodes, "LogicId")
-	fmt.Println(&logic.Nodes)
-
-	//组装属性
-	logic.CompileProperties()
-
-	fmt.Println(logic.Nodes)
-	fmt.Println(logic.Flows)
-	fmt.Println(logic.Input)
-	fmt.Println(logic.Output)
-
-	fmt.Println("code is", logic.GetCode())
-
-	//servlet := NC_Servlet{}
-	//servlet.ID = logic.ServletId
-	//NCDB.Debug().First(&servlet)
-	//
-	//controllerDir := path.Join(utils.DeployPath, servlet.GetName(), "controllers") //控制器文件夹
-	//utils.WriteToFile(path.Join(controllerDir, logic.GetName()+".go"), logic.GetCode())
-	//gofmtCMD := "gofmt -w  {{.logicName}}.go"
-	//gofmtCMD = strings.Replace(gofmtCMD, "{{.logicName}}", logic.GetName(), -1)
-	//cmd := exec.Command("/bin/bash", "-c", "cd "+controllerDir+";"+gofmtCMD)
-	//
-	//fmt.Println(cmd.Run())
+//构建form代码
+func (form NC_Form) BuildForm(servletName string) {
+	NCDB.Model(&form).Related(&form.Fields, "FormId")
+	WriteAndFormat(path.Join(utils.DeployPath, servletName, "models"), utils.GetPinYin(form.Name)+".go", form.GetCode())
 }

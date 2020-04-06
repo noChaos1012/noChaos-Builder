@@ -40,29 +40,30 @@ var controllerCode = `
 		NCController
 	}
 
+	// @router /{{.logicName}} [Post]
 	func  (c *{{.logicName}}) {{.logicName}} (){
-		var inputNode T_inputNode{{.logicID}}
-		var outputNode T_outputNode{{.logicID}}
-		err := json.Unmarshal(c.Ctx.Input.RequestBody, &inputNode)
+		var In T_In{{.logicID}}
+		var Out T_Out{{.logicID}}
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &In)
 		if c.handlerErrOK(err) {
-			c.LogicBody(&inputNode,&outputNode)
-			c.responseSuccess(map[string]interface{}{"output": outputNode})
+			c.LogicBody(&In,&Out)
+			c.responseSuccess(map[string]interface{}{"output": Out})
 		}
 	}
 
 
-	func (c *{{.logicName}}) LogicBody(inputNode *T_inputNode{{.logicID}},outputNode *T_outputNode{{.logicID}}) {
+	func (c *{{.logicName}}) LogicBody(In *T_In{{.logicID}},Out *T_Out{{.logicID}}) {
 			{{.logic}}
 	}
 `
 
 //获取代码
 func (l NC_Logic) GetCode() string {
-	code := strings.Replace(controllerCode, "{{.logicName}}", utils.GetPinYin(l.Name+strconv.Itoa(int(l.ID))), -1)
+	code := strings.Replace(controllerCode, "{{.logicName}}", l.GetName(), -1)
 	utils.GetPinYin(l.Name + strconv.Itoa(int(l.ID)))
 
-	code = strings.Replace(code, "{{.inputStructCode}}", getStructCode(l.Input.Properties, utils.GetPinYin("T_inputNode"+strconv.Itoa(int(l.ID)))), -1)
-	code = strings.Replace(code, "{{.outputStructCode}}", getStructCode(l.Output.Properties, "T_outputNode"+strconv.Itoa(int(l.ID))), -1)
+	code = strings.Replace(code, "{{.inputStructCode}}", getStructCode(l.Input.Properties, utils.GetPinYin("T_In"+strconv.Itoa(int(l.ID)))), -1)
+	code = strings.Replace(code, "{{.outputStructCode}}", getStructCode(l.Output.Properties, "T_Out"+strconv.Itoa(int(l.ID))), -1)
 	code = strings.Replace(code, "{{.logicID}}", strconv.Itoa(int(l.ID)), -1)
 
 	nodeCode := ""
@@ -86,7 +87,7 @@ func (l NC_Logic) GetCode() string {
 
 //数据库
 func (logic NC_Logic) GetName() string {
-	return utils.GetPinYin(logic.Name) + "_nc_" + strconv.Itoa(int(logic.ID))
+	return utils.GetPinYin(logic.Name) + "_" + strconv.Itoa(int(logic.ID))
 }
 
 //编译属性，将json属性转换成对应属性
@@ -106,7 +107,7 @@ func (logic *NC_Logic) CompileProperties() {
 //操作节点
 type Node struct {
 	Name    string      //节点名称
-	Index   int         //节点地址
+	Mark    string      //节点地址
 	Type    string      //节点类型
 	Declare interface{} //声明内容
 }
@@ -124,13 +125,12 @@ func (logic *NC_Logic) getNodeCode(node Node) string {
 				split = append(split, assign.Key+" = "+assign.Value)
 			}
 			assignCode := strings.Join(split, "\t\n") + "\t\n"
-			assignCode = strings.Replace(assignCode, "{{inputNode}}.", "T_inputNode"+strconv.Itoa(int(logic.ID))+".", -1)
-			assignCode = strings.Replace(assignCode, "{{outputNode}}.", "T_outputNode"+strconv.Itoa(int(logic.ID))+".", -1)
+
 			return assignCode
 		}(node.Declare)
 
 	case "variable":
-		return "var " + node.Name + " " + getStructName(node.Name) + "\n"
+		return "var " + node.Mark + " " + getStructName(node.Mark) + "\n"
 
 	default:
 		return code
@@ -143,7 +143,7 @@ func (node Node) getStructCode() string {
 	if node.Type == "variable" {
 		variables := []NC_Property{}
 		utils.ReUnmarshal(node.Declare, &variables)
-		return getStructCode(variables, getStructName(node.Name))
+		return getStructCode(variables, getStructName(node.Mark))
 	}
 	return code
 }
@@ -154,10 +154,23 @@ type Assign struct {
 	Value string
 }
 
+func (as *Assign) KeyName() string {
+
+	var split []string
+	for i, val := range strings.Split(as.Key, ".") {
+		if i > 0 {
+			split = append(split, utils.GetPinYin(val))
+		} else {
+			split = append(split, val)
+		}
+	}
+	return strings.Join(split, ".")
+}
+
 //顺序流向
 type Flow struct {
-	From   int
-	To     int
+	From   string
+	To     string
 	Judges [][]Judge
 }
 
@@ -173,13 +186,14 @@ func getStructName(name string) string {
 
 //定义节点
 type NC_VariableNode struct {
-	Index      int           //地址编号
+	Mark       string        //地址编号
 	Properties []NC_Property //类型结构属性
 }
 
 //单个定义的变量
 type NC_Property struct {
 	Name       string        //名称
+	Mark       string        //标识
 	Type       string        //类型
 	Multiple   bool          //多个
 	Properties []NC_Property //类型结构属性
@@ -199,7 +213,7 @@ func getStructCode(properties []NC_Property, structName string) string {
 	PropertiesCode := ""
 	for _, p := range properties {
 
-		pCode := utils.GetPinYin(p.Name) + " "
+		pCode := utils.GetPinYin(p.Mark) + " "
 		if p.Multiple {
 			pCode += "[]"
 		}
@@ -209,8 +223,8 @@ func getStructCode(properties []NC_Property, structName string) string {
 			pCode += p.Type
 
 		case "custom":
-			pCode += getStructName(p.Name)
-			PrefixStructCode = getStructCode(p.Properties, getStructName(p.Name))
+			pCode += getStructName(p.Mark)
+			PrefixStructCode = getStructCode(p.Properties, getStructName(p.Mark))
 
 		default:
 			pCode += getStructName(p.Type)

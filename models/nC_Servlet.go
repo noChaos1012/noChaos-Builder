@@ -4,7 +4,6 @@ import (
 	"com.waschild/noChaos-Server/utils"
 	"github.com/jinzhu/gorm"
 	"os"
-	"os/exec"
 	"path"
 	"strconv"
 	"strings"
@@ -15,7 +14,11 @@ type NC_Servlet struct {
 	gorm.Model
 	Name        string
 	Description string
-	DataBase    NC_Database `gorm:"FOREIGNKEY:ServletId"`
+	Port        int         //服务端口号
+	Database    NC_Database `gorm:"FOREIGNKEY:ServletId"`
+	DatabaseID  uint
+	FTP         NC_FTP `gorm:"FOREIGNKEY:ServletId"`
+	FTPID       uint
 	Deploys     []NC_Deploy `gorm:"FOREIGNKEY:ServletId"`
 	Forms       []NC_Form   `gorm:"FOREIGNKEY:ServletId"`
 	Logics      []NC_Logic  `gorm:"FOREIGNKEY:ServletId"`
@@ -52,29 +55,39 @@ func (servlet NC_Servlet) Initialize() {
 	}
 	`
 
-	utils.WriteToFile(path.Join(appPath, "main.go"), strings.Replace(mainCode, "{{.ServletName}}", rootPath, -1))
-	gofmtCMD := "gofmt -w  {{.File}}"
-	cmd := exec.Command("/bin/bash", "-c", "cd "+appPath+";"+strings.Replace(gofmtCMD, "{{.File}}", "main.go", -1))
-	cmd.Run()
+	//utils.WriteToFile(path.Join(appPath, "main.go"), strings.Replace(mainCode, "{{.ServletName}}", rootPath, -1))
+	//gofmtCMD := "gofmt -w  {{.File}}"
+	//cmd := exec.Command("/bin/bash", "-c", "cd "+appPath+";"+strings.Replace(gofmtCMD, "{{.File}}", "main.go", -1))
+	//cmd.Run()
 
-	var confCode = `appname = {{.ServletName}}
+	mainCode = strings.Replace(mainCode, "{{.ServletName}}", rootPath, -1)
+	WriteAndFormat(appPath, "main.go", mainCode)
+
+	//服务定义信息
+	var confCode = `
+	appname = {{.ServletName}}
 	httpport = {{.Port}}
-	runmode = {{.Mode}}
+	runmode = dev
 	autorender = false
 	copyrequestbody = true
 	EnableDocs = true
 	sqlconn = 
 	`
 
-	utils.WriteToFile(path.Join(appPath, "conf", "app.conf"), strings.Replace(confCode, "{{.ServletName}}", servlet.GetName(), -1))
-	cmd = exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "conf")+";"+strings.Replace(gofmtCMD, "{{.File}}", "app.conf", -1))
-	cmd.Run()
+	confCode = strings.Replace(confCode, "{{.ServletName}}", servlet.GetName(), -1)
+	confCode = strings.Replace(confCode, "{{.Port}}", strconv.Itoa(servlet.Port), -1)
 
+	//utils.WriteToFile(path.Join(appPath, "conf", "app.conf"), confCode)
+	//cmd = exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "conf")+";"+strings.Replace(gofmtCMD, "{{.File}}", "app.conf", -1))
+	//cmd.Run()
+
+	WriteAndFormat(path.Join(appPath, "conf"), "app.conf", confCode)
+
+	//基础逻辑体
 	var baseLogicCode = `
 	package controllers
 	
 	import (
-		"encoding/json"
 		"fmt"
 		"github.com/astaxie/beego"
 	)
@@ -111,11 +124,13 @@ func (servlet NC_Servlet) Initialize() {
 		ncc.ServeJSON()
 	}
 	`
-	utils.WriteToFile(path.Join(appPath, "controllers", "NCController.go"), baseLogicCode)
-	cmd = exec.Command("/bin/bash", "-c", "cd "+path.Join(appPath, "controllers")+";"+strings.Replace(gofmtCMD, "{{.File}}", "NCController.go", -1))
-	cmd.Run()
 
-	//数据库创建
+	WriteAndFormat(path.Join(appPath, "controllers"), "NCController.go", baseLogicCode)
+	//utils.WriteToFile(path.Join(controllerPath,fileName ), baseLogicCode)
+	//cmd = exec.Command("/bin/bash", "-c", "cd "+controllerPath+";"+strings.Replace(gofmtCMD, "{{.File}}", fileName, -1))
+	//cmd.Run()
+
+	//创建数据库
 	NCDB.Exec("Create Database If Not Exists " +
 		servlet.GetName() +
 		" Character Set UTF8 Collate utf8_general_ci ")
@@ -123,5 +138,5 @@ func (servlet NC_Servlet) Initialize() {
 
 //数据库名称
 func (servlet NC_Servlet) GetName() string {
-	return utils.GetPinYin(servlet.Name) + "_nc_" + strconv.Itoa(int(servlet.ID))
+	return utils.GetPinYin(servlet.Name) + "_" + strconv.Itoa(int(servlet.ID))
 }
