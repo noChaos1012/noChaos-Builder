@@ -14,15 +14,14 @@ type NC_Directory struct {
 	Type      string //类型为表单或逻辑
 }
 
+//TODO NC_Directory-获取命名空间源码
 func (d *NC_Directory) GetNamespaceCode() string {
 	code := `
 	{{.includeCode}}
 	{{.namespaceCode}}
 	`
-
 	includeCode := ""
 	logics := []NC_Logic{}
-
 	logic := NC_Logic{}
 	logic.ServletId = d.ServletId
 	logic.DirId = d.ID
@@ -37,7 +36,6 @@ func (d *NC_Directory) GetNamespaceCode() string {
 			includeCode += "beego.NSInclude(&controllers." + logic.GetName() + "{}),"
 		}
 	}
-
 	namespaceCode := ""
 	dirs := []NC_Directory{}
 	dir := NC_Directory{}
@@ -49,7 +47,6 @@ func (d *NC_Directory) GetNamespaceCode() string {
 	} else {
 		NCDB.Where(&dir).Find(&dirs)
 	}
-
 	if len(dirs) > 0 {
 		for _, dir := range dirs {
 			nsCode := `beego.NSNamespace("/{{.dirName}}",
@@ -62,66 +59,5 @@ func (d *NC_Directory) GetNamespaceCode() string {
 	}
 	code = strings.Replace(code, "{{.namespaceCode}}", namespaceCode, -1)
 	code = strings.Replace(code, "{{.includeCode}}", includeCode, -1)
-
 	return code
 }
-
-//func (s NC_Servlet) getNamespaceCode(dirId uint) string {
-//
-//	code := `
-//	{{.namespaceCode}},
-//	{{.includeCode}}
-//	`
-//	dirs := []NC_Directory{}
-//
-//	dir := NC_Directory{}
-//	dir.ServletId = s.ID
-//	dir.DirId = 0
-//	dir.Type = "逻辑"
-//	fmt.Println("dir is ",dir)
-//
-//	NCDB.Debug().Where(&dir).Find(&dirs)
-//	fmt.Println("dirs is ",dirs)
-//
-//	namespaceCodes := []string{}
-//
-//	//没有下一级返回空
-//	has := 1
-//	if len(dirs) > 0 {
-//		has = 1
-//		for _, dir := range dirs {
-//			nsCode := `beego.NSNamespace("/{{.dirName}}",
-//				{{.namespaceCode}},
-//			)`
-//			nsCode = strings.Replace(nsCode, "{{.dirName}}", dir.Name, -1)
-//			nsCode = strings.Replace(nsCode, "{{.namespaceCode}}", s.getNamespaceCode(dir.ID), -1)
-//			namespaceCodes = append(namespaceCodes, nsCode)
-//		}
-//	} else {
-//		has = 0
-//	}
-//
-//	includeCodes := []string{}
-//	logics := []NC_Logic{}
-//	NCDB.Where(&NC_Logic{DirId: dirId, ServletId: s.ID}).Find(&logics)
-//	fmt.Println("logics is ",logics)
-//	if len(logics) > 0 {
-//		has = 1
-//		for _, logic := range logics {
-//			includeCodes = append(includeCodes, "beego.NSInclude(&controllers."+logic.GetName()+"{})")
-//		}
-//	} else {
-//		has = 0
-//	}
-//
-//	if has == 0 {
-//		return ""
-//	} else {
-//		code = strings.Replace(code, "{{.namespaceCode}}", strings.Join(namespaceCodes, ","), -1)
-//		code = strings.Replace(code, "{{.includeCode}}", strings.Join(includeCodes, ","), -1)
-//	}
-//
-//	fmt.Println("code is ", code)
-//
-//	return code
-//}

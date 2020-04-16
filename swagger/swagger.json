@@ -1167,13 +1167,6 @@
                 }
             }
         },
-        "/test/Ceshiluoji20": {
-            "post": {
-                "tags": [
-                    "test"
-                ]
-            }
-        },
         "/user/": {
             "get": {
                 "tags": [

@@ -748,10 +748,6 @@ paths:
           description: 编译成功
         "403":
           description: body is empty
-  /test/Ceshiluoji20:
-    post:
-      tags:
-      - test
   /user/:
     get:
       tags:

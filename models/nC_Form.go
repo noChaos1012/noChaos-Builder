@@ -1,3 +1,5 @@
+// @Title  nC_Form
+// @Description  表单的处理
 package models
 
 import (
@@ -37,7 +39,7 @@ type NC_FormField struct {
 	Decimal       int    //标度
 }
 
-//关联--拓展
+// 关联-【拓展】
 type NC_FormRelation struct {
 	Type       string //关联类型、一对多、多对多
 	FromFormId uint   //来自对象
@@ -46,9 +48,7 @@ type NC_FormRelation struct {
 
 //类型字典
 var TypeMap = map[string]map[string]string{}
-
 var modelCode = `package models
-
 type {{.ModelName}} struct{
 	{{.ModelFields}}
 }
@@ -82,41 +82,33 @@ func init() {
 
 }
 
-//获取的model代码
-func (form NC_Form) GetCode() string {
-	fmt.Println("form is : ", form)
-
+//TODO NC_Form-获取的model源码
+func (form *NC_Form) GetCode() string {
 	code := strings.Replace(modelCode, "{{.ModelName}}", utils.GetPinYin(form.Name), -1)
-
 	codeArr := []string{}
 	for _, f := range form.Fields {
 		codeArr = append(codeArr, f.GetCode(form.IsStore))
 	}
 	code = strings.Replace(code, "{{.ModelFields}}", strings.Join(codeArr, "\n"), -1)
-
-	fmt.Println(code)
 	return code
-
 }
 
-//获取表单名称
-func (form NC_Form) GetName() string {
+//TODO NC_Form-获取表单名称
+func (form *NC_Form) GetName() string {
 	return utils.GetPinYin(form.Name)
 }
 
-//获取编码
-func (f NC_FormField) GetCode(IsStore bool) string {
+//TODO NC_FormField-获取源码
+func (f *NC_FormField) GetCode(IsStore bool) string {
 	code := strings.Replace(fieldCode, "{{.Name}}", f.GetName(), -1)
 	code = strings.Replace(code, "{{.Type}}", f.GetGoType(), -1)
 
 	tagStr := `json:"` + f.GetName() + `"`
-
 	if !IsStore {
 		tagStr = "`" + tagStr + "`"
 		code = strings.Replace(code, "{{.Tag}}", tagStr, -1)
 		return code
 	}
-
 	tagStr = tagStr + ` gorm:"column:` + f.GetName() + `;`
 	//tagStr := ` gorm:"column:`+ f.GetName() + `";`
 	tagStr = tagStr + f.GetSQLType()
@@ -135,7 +127,6 @@ func (f NC_FormField) GetCode(IsStore bool) string {
 	if f.NotNull {
 		tagStr += "not null;"
 	}
-
 	if len(f.Default) > 0 {
 		if f.Type == "文本" {
 			tagStr += `default:'` + f.Default + `';`
@@ -143,7 +134,6 @@ func (f NC_FormField) GetCode(IsStore bool) string {
 			tagStr += `default:` + f.Default + `;`
 		}
 	}
-
 	if strings.HasSuffix(tagStr, ";") {
 		tagStr = tagStr[:len(tagStr)-1] + `"`
 	}
@@ -152,8 +142,8 @@ func (f NC_FormField) GetCode(IsStore bool) string {
 	return code
 }
 
-//获取程序字段类型
-func (field NC_FormField) GetGoType() string {
+//TODO NC_FormField-获取源码中字段类型
+func (field *NC_FormField) GetGoType() string {
 	fieldType, ok := TypeMap["go"][field.Type]
 	if !ok {
 		fieldType = field.Type
@@ -162,23 +152,16 @@ func (field NC_FormField) GetGoType() string {
 		fieldType += strconv.Itoa(field.Size)
 		fmt.Println(fieldType, field)
 	}
-
 	return fieldType
 }
 
-//获取字段名称
-func (field NC_FormField) GetName() string {
-	return utils.GetPinYin(field.Name)
-}
-
-//获取数据库字段类型
-func (field NC_FormField) GetSQLType() string {
+//TODO NC_FormField-获取数据库字段类型
+func (field *NC_FormField) GetSQLType() string {
 	fieldType, ok := TypeMap["sql"][field.Type]
 	if !ok {
 		return ""
 	}
 	switch field.Type {
-
 	case "文本":
 		if (field.Size <= 255) && (field.Size > 0) {
 			fieldType = fieldType + "(" + strconv.Itoa(field.Size) + ")"
@@ -205,6 +188,10 @@ func (field NC_FormField) GetSQLType() string {
 			fieldType = "double(" + strconv.Itoa(field.Maximum) + "," + strconv.Itoa(field.Decimal) + ")"
 		}
 	}
-
 	return "type:" + fieldType + ";"
+}
+
+//TODO NC_FormField-获取字段名称
+func (field NC_FormField) GetName() string {
+	return utils.GetPinYin(field.Name)
 }

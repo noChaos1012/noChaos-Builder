@@ -60,12 +60,12 @@ func init() {
 			),
 		),
 		beego.NSNamespace("/test",
-			beego.NSNamespace("/test"),//beego.NSInclude(
+			beego.NSNamespace("/test"), //beego.NSInclude(
 			//&controllers.Ceshiluoji20{},
 			//),
 
 			beego.NSInclude(
-				&controllers.Ceshiluoji20{},
+			//&controllers.Ceshiluoji20{},
 			),
 		),
 	)

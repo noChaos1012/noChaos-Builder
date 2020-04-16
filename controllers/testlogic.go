@@ -2,45 +2,36 @@ package controllers
 
 import "encoding/json"
 
-type t_Param_2 struct {
-	Param_7 string
-	Param_8 string
+type T_In26 struct {
+	Param_1 int
 }
 
-type T_In20 struct {
-	Param_1 string
-	Param_2 t_Param_2
+type T_Out26 struct {
+	Param_2 string
 }
-
-type T_Out20 struct {
-	Param_3 string
-	Param_4 string
-}
-
-type t_Node_1 struct {
-	Param_5 string
-	Param_6 string
-}
-
-type Ceshiluoji20 struct {
+type Panduanceshi20041301_26 struct {
 	NCController
 }
 
-// @router /Ceshiluoji20 [Post]
-func (c *Ceshiluoji20) Ceshiluoji20() {
-	var In T_In20
-	var Out T_Out20
+// @router /Panduanceshi20041301_26 [Post]
+func (c *Panduanceshi20041301_26) Panduanceshi20041301_26() {
+	var In T_In26
+	var Out T_Out26
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &In)
 	if c.handlerErrOK(err) {
 		c.LogicBody(&In, &Out)
 		c.responseSuccess(map[string]interface{}{"output": Out})
 	}
 }
+func (c *Panduanceshi20041301_26) LogicBody(In *T_In26, Out *T_Out26) {
 
-func (c *Ceshiluoji20) LogicBody(In *T_In20, Out *T_Out20) {
-	var Node_1 t_Node_1
-	Node_1.Param_5 = "aa"
-	Node_1.Param_6 = "bb"
-	Out.Param_3 = Node_1.Param_5 + In.Param_1
-	Out.Param_4 = Node_1.Param_6 + In.Param_2.Param_7 + In.Param_2.Param_8
+	if In.Param_1 == 1 {
+		Out.Param_2 = `类型1`
+	}
+	if In.Param_1 == 2 {
+		Out.Param_2 = `类型2`
+	}
+	if ((In.Param_1 > 2) && (In.Param_1 < 5)) || ((In.Param_1 > 12) && (In.Param_1 < 15)) {
+		Out.Param_2 = `类型3`
+	}
 }

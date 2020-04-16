@@ -21,7 +21,6 @@ func (c *BuildController) BuildServlet() {
 
 	if c.handlerErrOK(err) {
 		models.NCDB.Create(&build)
-
 		build.BuildServlet()
 		c.responseSuccess(map[string]interface{}{"model": &build})
 	}
@@ -136,6 +135,7 @@ func (c *BuildController) BuildLogic() {
 	logic := models.NC_Logic{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &logic)
 	if c.handlerErrOK(err) {
+		models.NCDB.Debug().First(&logic)
 		servlet := models.NC_Servlet{}
 		servlet.ID = logic.ServletId
 		models.NCDB.Debug().First(&servlet)

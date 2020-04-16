@@ -1,3 +1,5 @@
+// @Title  models
+// @Description  数据结构及存储逻辑的处理
 package models
 
 import (
@@ -13,9 +15,7 @@ var NCDB *gorm.DB
 
 func init() {
 	var err error
-
 	NCDB, err = gorm.Open("mysql", "root:wyw940524@/noChaos-server?charset=utf8&parseTime=True&loc=Local")
-
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -38,7 +38,7 @@ func init() {
 		&NC_FTP{})
 }
 
-//分页结构体
+// Page 分页结构体
 type Page struct {
 	PageNo     int
 	PageSize   int
@@ -47,7 +47,6 @@ type Page struct {
 }
 
 func PageUtil(count int, pageNo int, pageSize int, list interface{}) Page {
-
 	return Page{
 		PageNo:     pageNo,
 		PageSize:   pageSize,

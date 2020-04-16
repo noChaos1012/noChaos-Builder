@@ -20,14 +20,9 @@ func (c *LogicController) Create() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &model)
 
 	if c.handlerErrOK(err) {
-
 		model.NodesJson, _ = json.Marshal(model.NodesJson)
 		model.FlowsJson, _ = json.Marshal(model.FlowsJson)
-		model.OutputJson, _ = json.Marshal(model.OutputJson)
-		model.InputJson, _ = json.Marshal(model.InputJson)
-
 		fmt.Println(model.NodesJson)
-
 		models.NCDB.Create(&model)
 		c.responseSuccess(map[string]interface{}{"model": model})
 	}
