@@ -58,13 +58,13 @@ func (as *Assign) AssembleExpressions(formula string) string {
 		//如果还有括号或者是开头
 		if strings.Contains(leftFormula, "(") || startPoint == 0 {
 			startPoint = strings.LastIndex(leftFormula, "(")
-			as.Expression = append(as.Expression, name+":="+formula[startPoint+1:endPoint+1]+"//左侧")
+			as.Expression = append(as.Expression, name+":="+formula[startPoint+1:endPoint+1])
 			left := formula[:startPoint+1]
 			right := formula[endPoint+1:]
 			formula = left + name + right
 			return as.AssembleExpressions(formula)
 		}
-		as.Expression = append(as.Expression, name+":="+formula[startPoint+1:endPoint+1]+"//全部")
+		as.Expression = append(as.Expression, name+":="+formula[startPoint+1:endPoint+1])
 		left := formula[:startPoint]
 		right := formula[endPoint+1:]
 		formula = left + name + right
