@@ -1,5 +1,5 @@
 // @Title  nC_Servlet_SystemMethod
-// @Description  系统方法源码
+// @Description  系统逻辑源码
 package models
 
 var MethodMap map[string]string

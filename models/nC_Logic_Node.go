@@ -45,25 +45,6 @@ type NC_Property struct {
 	Properties   []NC_Property //类型结构属性
 }
 
-//赋值
-type Assign struct {
-	Key   string
-	Value string
-}
-
-func (as *Assign) KeyName() string {
-
-	var split []string
-	for i, val := range strings.Split(as.Key, ".") {
-		if i > 0 {
-			split = append(split, utils.GetPinYin(val))
-		} else {
-			split = append(split, val)
-		}
-	}
-	return strings.Join(split, ".")
-}
-
 //顺序流向
 type NC_Flow struct {
 	From   string
@@ -77,8 +58,6 @@ func (flow *NC_Flow) getJudgeCode() string {
 	for _, judge := range flow.Judges {
 		codes = append(codes, judge.getCode())
 	}
-
-	fmt.Println("flow code is ", strings.Join(codes, "||"))
 	return strings.Join(codes, "||")
 }
 
@@ -100,21 +79,18 @@ func (judge *Judge) getCode() string {
 		}
 		code = fmt.Sprintf("((%s) && (%s))", code, strings.Join(subCodes, "||"))
 	}
-	fmt.Println("judge code is ", code)
 	return code
 }
 
 // TODO NC_Node-获取赋值节点源码assign
 func (node *NC_Node) getAssignCode() string {
-	code := ""
 	var split []string
 	assigns := []Assign{}
 	utils.ReUnmarshal(node.Declare, &assigns)
 	for _, assign := range assigns {
-		split = append(split, assign.Key+" = "+assign.Value)
+		split = append(split, assign.AnalyzeExpression())
 	}
-	code = strings.Join(split, "\t\n") + "\t\n"
-	return code
+	return strings.Join(split, "\t\n") + "\t\n"
 }
 
 // TODO NC_Node-获取定义节点源码variable
@@ -133,14 +109,12 @@ func (node *NC_Node) getVariableCode() string {
 // TODO NC_Node-获取循环节点源码cycle
 func (node *NC_Node) getCycleCode(flow NC_Flow) string {
 	judgeCode := fmt.Sprintf("if %s == false {\n\tbreak\n}\n", flow.getJudgeCode())
-	code := "for { \n" + judgeCode
-	return code
+	return "for { \n" + judgeCode
 }
 
 // TODO NC_Node-获取判断节点源码judge
 func (node *NC_Node) getJudgeCode(flow NC_Flow) string {
-	code := fmt.Sprintf("if %s {", flow.getJudgeCode())
-	return code
+	return fmt.Sprintf("if %s {", flow.getJudgeCode())
 }
 
 // TODO NC_Node-获取逻辑节点源码logic

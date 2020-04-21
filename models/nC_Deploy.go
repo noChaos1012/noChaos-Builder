@@ -19,7 +19,6 @@ type NC_DeployDownload struct {
 	ServletId          uint `gorm:"not null"`
 	Version            string
 	VersionDescription string
-
-	IP   string
-	Port string
+	IP                 string
+	Port               string
 }

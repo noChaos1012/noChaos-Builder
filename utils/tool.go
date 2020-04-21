@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
+	"unicode"
 )
 
 //MD5加密
@@ -30,7 +32,7 @@ func ReUnmarshal(inValue, outValue interface{}) {
 	}
 }
 
-//获取首字母大写的英文
+//获取首字母大写的中文拼音
 func GetPinYin(chinese string) string {
 	preWord := pinyin.Romanize(chinese)
 	strArry := []rune(preWord)
@@ -48,4 +50,25 @@ func GetPinYinLittle(chinese string) string {
 		strArry[0] += 32
 	}
 	return string(strArry)
+}
+
+//获取首字母大写的英文
+func GetTitle(s string) string {
+	strArry := []rune(s)
+	if strArry[0] >= 97 && strArry[0] <= 122 {
+		strArry[0] -= 32
+	}
+	return string(strArry)
+}
+
+//获取字符串中的中文连续词语，以(分割
+func GetChinese(s string) []string {
+	strArry := []rune(s)
+	chineseArry := []rune{}
+	for _, char := range strArry {
+		if unicode.Is(unicode.Han, char) || char == 40 {
+			chineseArry = append(chineseArry, char)
+		}
+	}
+	return strings.Split(string(chineseArry), "(")
 }
