@@ -3,7 +3,6 @@ package controllers
 import (
 	"com.waschild/noChaos-Server/models"
 	"encoding/json"
-
 	"github.com/astaxie/beego"
 )
 

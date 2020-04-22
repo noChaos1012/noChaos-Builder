@@ -1,5 +1,5 @@
 // @Title  nC_Logic_Node
-// @Description  逻辑节点的相关处理
+// @Description  节点的整体处理
 package models
 
 import (
@@ -119,8 +119,9 @@ func (node *NC_Node) getJudgeCode(flow NC_Flow) string {
 
 // TODO NC_Node-获取逻辑节点源码logic
 func (node *NC_Node) getLogicCode() string {
-	code := ""
-	return code
+	logic_node := Logic_Node{}
+	utils.ReUnmarshal(node.Declare, &logic_node)
+	return logic_node.GetCode(node.Mark)
 }
 
 // TODO NC_Node-获取表单节点源码form

@@ -14,7 +14,7 @@ func init() {
 	//switch beego.BConfig.RunMode {
 	//case "dev":
 	//	currentPath, _ = os.Getwd()
-	//case "test":
+	//case "testBuildAssignNode":
 	//	dir, _ := os.Executable()
 	//	currentPath = filepath.Dir(dir) + "/noChaos-Server"
 	//default:

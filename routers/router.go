@@ -59,8 +59,8 @@ func init() {
 				&controllers.BuildController{},
 			),
 		),
-		beego.NSNamespace("/test",
-			beego.NSNamespace("/test"), //beego.NSInclude(
+		beego.NSNamespace("/testBuildAssignNode",
+			beego.NSNamespace("/testBuildAssignNode"), //beego.NSInclude(
 			//&controllers.Ceshiluoji20{},
 			//),
 

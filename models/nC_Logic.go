@@ -7,7 +7,6 @@ import (
 	"com.waschild/noChaos-Server/utils"
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -18,22 +17,22 @@ type NC_Logic struct {
 	DirId     uint //文件夹ID
 	Name      string
 
-	NodesJson interface{} `gorm:"type:text"`
-	FlowsJson interface{} `gorm:"type:text"`
+	InputJson  interface{} `gorm:"type:text"`
+	OutputJson interface{} `gorm:"type:text"`
+	NodesJson  interface{} `gorm:"type:text"`
+	FlowsJson  interface{} `gorm:"type:text"`
 
-	Input  NC_VariableNode    //输入变量
-	Output NC_VariableNode    //输出变量
+	Input  NC_VariableNode    `gorm:"-"` //输入变量
+	Output NC_VariableNode    `gorm:"-"` //输出变量
 	Nodes  map[string]NC_Node `gorm:"-"` //运算节点
-	Flows  []NC_Flow          //运算节点
+	Flows  []NC_Flow          `gorm:"-"` //运算节点
 }
-
-var Code = ""
 
 //TODO LOGIC-组装逻辑体代码
 func (l *NC_Logic) GetCode() string {
 	var controllerCode = `
 	package controllers
-	import "encoding/json"
+	{{.imports}}
 	{{.variableStructCode}}
 
 	type {{.logicName}} struct {
@@ -50,22 +49,15 @@ func (l *NC_Logic) GetCode() string {
 			c.responseSuccess(map[string]interface{}{"output": Out})
 		}
 	}
-
 	func (c *{{.logicName}}) LogicBody(In *T_In{{.logicID}},Out *T_Out{{.logicID}}) {
 			{{.core}}
 	}
 	`
-
 	code := strings.Replace(controllerCode, "{{.logicName}}", l.GetName(), -1)
 	code = strings.Replace(code, "{{.logicID}}", strconv.Itoa(int(l.ID)), -1)
-	code = strings.Replace(code, "{{.core}}", l.GetCoreCode(), -1)
+	code = strings.Replace(code, "{{.core}}", l.AssembleNodes("In", "Logic", ""), -1)
+	code = strings.Replace(code, "{{.imports}}", l.GetImportsCode(), -1)
 	code = strings.Replace(code, "{{.variableStructCode}}", l.GetStructCode(), -1)
-
-	regex, _ := regexp.Compile(`
-
-`)
-	code = regex.ReplaceAllString(code, `
-`)
 	return code
 }
 
@@ -74,8 +66,9 @@ func (logic *NC_Logic) GetName() string {
 	return utils.GetPinYin(logic.Name) + "_" + strconv.Itoa(int(logic.ID))
 }
 
-//TODO LOGIC-编译属性，将json属性转换成对应属性
+//TODO LOGIC-编译属性初始化逻辑数据
 func (logic *NC_Logic) CompileProperties() {
+	//转换数据结构
 	nodes := []NC_Node{}
 	properties := []interface{}{&nodes, &logic.Flows}
 	for i, jsonCode := range []interface{}{logic.NodesJson, logic.FlowsJson} {
@@ -87,31 +80,25 @@ func (logic *NC_Logic) CompileProperties() {
 			}
 		}
 	}
-
+	//初始化逻辑节点
 	logic.Nodes = map[string]NC_Node{}
 	for _, node := range nodes {
 		logic.Nodes[node.Mark] = node
 	}
-
+	//配置节点进出线
 	for _, flow := range logic.Flows {
 		fromNode := logic.Nodes[flow.From]
 		fromNode.OutLines = append(fromNode.OutLines, flow)
 		logic.Nodes[flow.From] = fromNode
-
 		toNode := logic.Nodes[flow.To]
 		toNode.InLines = append(toNode.InLines, flow)
 		logic.Nodes[flow.To] = toNode
 	}
-
-	logic.Input.Mark = logic.Nodes["In"].Mark
-	utils.ReUnmarshal(logic.Nodes["In"].Declare, &logic.Input.Properties)
-	logic.Input.Mark = logic.Nodes["Out"].Mark
-	utils.ReUnmarshal(logic.Nodes["Out"].Declare, &logic.Output.Properties)
 	//初始化最高层上级节点
 	logic.Nodes["Logic"] = NC_Node{}
 }
 
-//TODO LOGIC-获取逻辑中用到的结构体代码
+//TODO LOGIC-获取逻辑中用到的结构体源码
 func (logic *NC_Logic) GetStructCode() string {
 	structCode := ""
 	for _, node := range logic.Nodes {
@@ -131,12 +118,12 @@ func (logic *NC_Logic) GetStructCode() string {
 	return structCode
 }
 
-//TODO LOGIC-获取逻辑体核心代码
-func (logic *NC_Logic) GetCoreCode() string {
-	return logic.AssembleNodes("In", "Logic", "")
+//TODO LOGIC-获取导入包源码
+func (logic *NC_Logic) GetImportsCode() string {
+	return `import "encoding/json"`
 }
 
-//TODO LOGIC-组装各逻辑节点代码
+//TODO LOGIC-组装各逻辑节点源码
 func (logic *NC_Logic) AssembleNodes(currentMark, superiorMark, code string) string {
 
 	if currentMark == superiorMark {
@@ -209,11 +196,10 @@ func getStructName(name string) string {
 	return "t_" + utils.GetPinYin(name)
 }
 
-//TODO 递归获取结构代码
+//TODO 递归获取结构源码
 func recurseStructCode(structName string, properties []NC_Property) string {
 	code := `
 	{{.PrefixStruct}}
-
 	type {{.StructName}} struct{
 		{{.Properties}}
 	}`

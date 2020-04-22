@@ -6,7 +6,7 @@ import (
 
 func main() {
 	logic := models.NC_Logic{}
-	logic.ID = 26
+	logic.ID = 27
 	models.NCDB.Debug().First(&logic)
 	servlet := models.NC_Servlet{}
 	servlet.ID = logic.ServletId

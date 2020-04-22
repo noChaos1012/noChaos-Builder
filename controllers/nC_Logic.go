@@ -20,9 +20,18 @@ func (c *LogicController) Create() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &model)
 
 	if c.handlerErrOK(err) {
-		model.NodesJson, _ = json.Marshal(model.NodesJson)
+
+		NodesData, _ := json.Marshal(model.NodesJson)
+		nodes := []models.NC_Node{}
+		err := json.Unmarshal(NodesData, &nodes)
+		if err != nil {
+			fmt.Println("json.Unmarshal is err:", err.Error())
+		}
+		model.InputJson, _ = json.Marshal(nodes[0])
+		model.OutputJson, _ = json.Marshal(nodes[1])
+		model.NodesJson = NodesData
 		model.FlowsJson, _ = json.Marshal(model.FlowsJson)
-		fmt.Println(model.NodesJson)
+
 		models.NCDB.Create(&model)
 		c.responseSuccess(map[string]interface{}{"model": model})
 	}
@@ -71,7 +80,7 @@ func (l *LogicController) Get() {
 // @Description 编译逻辑
 // @Success 200 编译成功
 // @Failure 403 body is empty
-// @router /test [Post]
+// @router /testBuildAssignNode [Post]
 func (l *LogicController) Test() {
 	//
 	//var receivedLogic build.Logic
