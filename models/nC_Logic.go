@@ -26,6 +26,7 @@ type NC_Logic struct {
 	Output NC_VariableNode    `gorm:"-"` //输出变量
 	Nodes  map[string]NC_Node `gorm:"-"` //运算节点
 	Flows  []NC_Flow          `gorm:"-"` //运算节点
+	Pkgs   []string           `gorm:"-"` //引用包
 }
 
 //TODO LOGIC-组装逻辑体代码
@@ -37,19 +38,19 @@ func (l *NC_Logic) GetCode() string {
 
 	type {{.logicName}} struct {
 		NCController
+		In T_In{{.logicID}}
+		Out T_Out{{.logicID}}
 	}
 
 	// @router /{{.logicName}} [Post]
-	func  (c *{{.logicName}}) {{.logicName}} (){
-		var In T_In{{.logicID}}
-		var Out T_Out{{.logicID}}
-		err := json.Unmarshal(c.Ctx.Input.RequestBody, &In)
-		if c.handlerErrOK(err) {
-			c.LogicBody(&In,&Out)
-			c.responseSuccess(map[string]interface{}{"output": Out})
+	func  (C *{{.logicName}}) {{.logicName}} (){
+		err := json.Unmarshal(C.Ctx.Input.RequestBody, &C.In)
+		if C.handlerErrOK(err) {
+			C.LogicBody()
+			C.responseSuccess(map[string]interface{}{"output": C.Out})
 		}
 	}
-	func (c *{{.logicName}}) LogicBody(In *T_In{{.logicID}},Out *T_Out{{.logicID}}) {
+	func (C *{{.logicName}}) LogicBody() {
 			{{.core}}
 	}
 	`
@@ -120,7 +121,24 @@ func (logic *NC_Logic) GetStructCode() string {
 
 //TODO LOGIC-获取导入包源码
 func (logic *NC_Logic) GetImportsCode() string {
-	return `import "encoding/json"`
+	importsCode := `import ( ` + "\n"
+
+	pkgs := []string{}
+	pkgs = append(pkgs, `"encoding/json"`)
+
+	for _, node := range logic.Nodes {
+		if node.Type == "form" {
+
+		}
+	}
+
+	importsCode += strings.Join(pkgs, "\n")
+	importsCode += ")"
+
+	//servlet.GetName()
+	//models
+
+	return importsCode
 }
 
 //TODO LOGIC-组装各逻辑节点源码
@@ -183,9 +201,14 @@ func (logic *NC_Logic) AssembleNodes(currentMark, superiorMark, code string) str
 		}
 	case FormNode:
 		code += currentNode.getFormCode()
+		//添加models引用包
+		logic.Pkgs = append(logic.Pkgs, "{{rootPath}}/models")
 
 	case LogicNode:
-		code += currentNode.getLogicCode()
+		logicCode, packageName := currentNode.getLogicCode()
+		code += logicCode
+		//添加系统逻辑引用包
+		logic.Pkgs = append(logic.Pkgs, "{{rootPath}}/"+packageName)
 	}
 	code += logic.AssembleNodes(nextMark, superiorMark, "\n") //继续执行下一个节点
 	return code

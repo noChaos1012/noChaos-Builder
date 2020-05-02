@@ -100,3 +100,19 @@ func (l *LogicController) Test() {
 	//l.ServeJSON()
 
 }
+
+// @Title	Update
+// @Description 修改逻辑
+// @Param	name	string	true	"逻辑名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /update [Post]
+func (l *LogicController) Update() { l.UpdateWithModel(&models.NC_Servlet{}) }
+
+// @Title	Delete
+// @Description 删除逻辑
+// @Param	name	string	true	"逻辑名称"
+// @Success 200 编译成功
+// @Failure 403 body is empty
+// @router /delete [Post]
+func (l *LogicController) Delete() { l.DeleteWithModel(&models.NC_Servlet{}) }
