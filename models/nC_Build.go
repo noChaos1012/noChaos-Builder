@@ -101,7 +101,6 @@ func (servlet NC_Servlet) BuildRouter(version, description string) {
 	`
 	routerCode = strings.Replace(routerCode, "{{.version}}", version, -1)
 	routerCode = strings.Replace(routerCode, "{{.description}}", description, -1)
-
 	routerCode = strings.Replace(routerCode, "{{.Package}}", func(servlet NC_Servlet) string {
 		pkgCode := `	import (
 				"noChaos-Server_Data/{{.ServletName}}/controllers"

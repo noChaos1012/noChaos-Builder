@@ -19,32 +19,31 @@ func (l_node *Logic_Node) GetCode(NodeMark string) string {
 	logic := NC_Logic{}
 	logic.ID = l_node.LogicId
 	NCDB.First(&logic)
+
+	LogicMark := "Logic" + NodeMark
 	code := `
-		Logic{{NodeMark}} := {{Package}}{{LogicName}}{}
-		In{{NodeMark}} := {{Package}}T_In26{}
+		{{LogicMark}} := {{Package}}{{LogicName}}{}
 		{{inputAssigns}}
-		Out{{NodeMark}} := {{Package}}T_Out26{}
-		Logic{{NodeMark}}.LogicBody(&In{{NodeMark}},&Out{{NodeMark}})
+		{{LogicMark}}.LogicBody()
 		{{outputAssigns}}
 	`
-	if l_node.Package == "self" {
-		l_node.Package = ""
-	} else {
-		l_node.Package += "."
+	packageName := ""
+	if l_node.Package != "self" {
+		packageName = l_node.Package + "."
 	}
-	code = strings.Replace(code, "{{NodeMark}}", NodeMark, -1)
-	code = strings.Replace(code, "{{Package}}", l_node.Package, -1)
+	code = strings.Replace(code, "{{LogicMark}}", LogicMark, -1)
+	code = strings.Replace(code, "{{Package}}", packageName, -1)
 	code = strings.Replace(code, "{{LogicName}}", logic.GetName(), 1)
 
 	inputAssigns := []string{}
 	for _, assign := range l_node.InputAssigns {
-		assign.Key = strings.Replace(assign.Key, "In", "In"+NodeMark, 1)
+		assign.Key = strings.Replace(assign.Key, "In", LogicMark+".In", 1)
 		inputAssigns = append(inputAssigns, assign.AnalyzeExpression())
 	}
 	code = strings.Replace(code, "{{inputAssigns}}", strings.Join(inputAssigns, "\n"), 1)
 	outputAssigns := []string{}
 	for _, assign := range l_node.OutputAssigns {
-		assign.Value = strings.Replace(assign.Value, "Out", "Out"+NodeMark, 1)
+		assign.Value = strings.Replace(assign.Value, "Out", LogicMark+".Out", 1)
 		outputAssigns = append(outputAssigns, assign.AnalyzeExpression())
 	}
 	code = strings.Replace(code, "{{outputAssigns}}", strings.Join(outputAssigns, "\n"), 1)

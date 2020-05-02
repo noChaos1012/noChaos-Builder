@@ -1,6 +1,9 @@
 package controllers
 
-import "encoding/json"
+import "C"
+import (
+	"encoding/json"
+)
 
 type T_In26 struct {
 	Param_1 int
@@ -34,4 +37,5 @@ func (c *Panduanceshi20041301_26) LogicBody(In *T_In26, Out *T_Out26) {
 	if ((In.Param_1 > 2) && (In.Param_1 < 5)) || ((In.Param_1 > 12) && (In.Param_1 < 15)) {
 		Out.Param_2 = `类型3`
 	}
+
 }

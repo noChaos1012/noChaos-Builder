@@ -45,43 +45,6 @@ type NC_Property struct {
 	Properties   []NC_Property //类型结构属性
 }
 
-//顺序流向
-type NC_Flow struct {
-	From   string
-	To     string
-	Judges []Judge
-}
-
-// TODO NC_Flow-获取判断条件源码
-func (flow *NC_Flow) getJudgeCode() string {
-	codes := []string{}
-	for _, judge := range flow.Judges {
-		codes = append(codes, judge.getCode())
-	}
-	return strings.Join(codes, "||")
-}
-
-//判断条件
-type Judge struct {
-	Param     string
-	Condition string //条件
-	Value     string
-	SubJudges []Judge //子（且）判断
-}
-
-// TODO NC_Flow-获取判断源码
-func (judge *Judge) getCode() string {
-	code := strings.Join([]string{judge.Param, judge.Condition, judge.Value}, " ")
-	if len(judge.SubJudges) > 0 {
-		subCodes := []string{}
-		for _, subJudge := range judge.SubJudges {
-			subCodes = append(subCodes, subJudge.getCode())
-		}
-		code = fmt.Sprintf("((%s) && (%s))", code, strings.Join(subCodes, "||"))
-	}
-	return code
-}
-
 // TODO NC_Node-获取赋值节点源码assign
 func (node *NC_Node) getAssignCode() string {
 	var split []string
@@ -118,10 +81,10 @@ func (node *NC_Node) getJudgeCode(flow NC_Flow) string {
 }
 
 // TODO NC_Node-获取逻辑节点源码logic
-func (node *NC_Node) getLogicCode() string {
+func (node *NC_Node) getLogicCode() (string, string) {
 	logic_node := Logic_Node{}
 	utils.ReUnmarshal(node.Declare, &logic_node)
-	return logic_node.GetCode(node.Mark)
+	return logic_node.GetCode(node.Mark), logic_node.Package
 }
 
 // TODO NC_Node-获取表单节点源码form
