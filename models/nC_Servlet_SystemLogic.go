@@ -27,5 +27,3 @@ var HandlerErrOK = `func (ncc *NCController) handlerErrOK(err error) bool {
 		}
 		return true
 	}`
-
-//todo 数据-数字处理-加减乘除
